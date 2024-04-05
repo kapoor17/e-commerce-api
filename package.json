@@ -1,7 +1,6 @@
 {
   "name": "workspaces-practice",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,5 +11,14 @@
   "workspaces": [
     "packages/server",
     "packages/client"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kapoor17/e-commerce-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kapoor17/e-commerce-api/issues"
+  },
+  "homepage": "https://github.com/kapoor17/e-commerce-api#readme",
+  "description": ""
 }
