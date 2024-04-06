@@ -1,0 +1,182 @@
+openapi: 3.0.3
+info:
+  title: E-Commerce-App - OpenAPI 3.0
+  version: 1.0.0
+  description: 'This is a E Commerce Store Server based on the OpenAPI 3.0 specification. '
+  contact:
+    email: himanshu.kapur17@gmail.com
+    name: Himanshu Kapoor
+paths:
+  /login:
+    summary: Logs In a user
+    description: Authentication route for logging in a user.
+    post:
+      summary: Logs In a user
+      operationId: register_user
+      requestBody:
+        description: A user's credentials
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+        required: true
+      responses:
+        '200':
+          description: 'Success: User Logged in'
+          content:
+            application/json:
+              examples:
+                user:
+                  value: |-
+                    {
+                      "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                    }
+      tags:
+        - Authentication
+  /register:
+    summary: Registers a new user
+    description: Authentication route for registering new user
+    post:
+      summary: Registers a new user
+      operationId: login_user
+      requestBody:
+        description: A user's credentials and information
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: 'Success: User Created'
+          content:
+            application/json:
+              examples:
+                user:
+                  value: |-
+                    {
+                      "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                    }
+      tags:
+        - Authentication
+  /products:
+    summary: Fetches or creates products
+    description: Route to interact with our products
+    get:
+      summary: All products in our inventory
+      description: Returns all products in our inventory
+      operationId: get_products
+      responses:
+        '200':
+          description: Success
+      tags:
+        - Products
+    post:
+      summary: Creates a new Product
+      description: Creates a new product for users to buy
+      operationId: create_product
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Products
+  /products/{id}:
+    summary: Interact with a single product
+    get:
+      summary: Gets a single Product
+      operationId: get_product
+      parameters:
+      - name: id
+        in: path
+        description: The id of the order.
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Products
+    patch:
+      summary: Updates a single Product
+      operationId: patch_product
+      parameters:
+      - name: id
+        in: path
+        description: The id of the order.
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Products
+    delete:
+      summary: Deletes a single Product
+      operationId: delete_product
+      parameters:
+      - name: id
+        in: path
+        description: The id of the order.
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Products
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        age:
+          type: integer
+        gender:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        email:
+          type: string
+        password:
+          type: string
+      xml:
+        name: User
+    Address:
+      type: object
+      properties:
+        address:
+          type: string
+        country:
+          type: string
+        state:
+          type: string
+        pincode:
+          type: string
+      xml:
+        name: Address
+    Product:
+      type: object
+      properties:
+        name:
+          type: string
+        brand:
+          type: string
+        price:
+          type: integer
+        rating:
+          type: string
+        featured:
+          type: string
+      xml:
+        name: Register
