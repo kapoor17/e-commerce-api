@@ -1,0 +1,17 @@
+{
+  "name": "@e-commerce-app/shared",
+  "version": "1.0.0",
+  "description": "",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kapoor17/e-commerce-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kapoor17/e-commerce-api/issues"
+  },
+  "homepage": "https://github.com/kapoor17/e-commerce-api#readme"
+}
