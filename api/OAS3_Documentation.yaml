@@ -36,6 +36,36 @@ paths:
                     {
                       "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
                     }
+        '400':
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                      "error":"Bad Request"
+                    }
+        '404':
+          description: 'Error: User not found'
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                      "error":"User not found"
+                    }
+        '401':
+          description: 'Error: Unauthorized'
+          content:
+           application/json:
+             examples:
+                error:
+                  value: |-
+                    {
+                      "error":"Wrong password"
+                    }
       tags:
         - Authentication
   /register:
@@ -60,6 +90,26 @@ paths:
                   value: |-
                     {
                       "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                    }
+        '400':
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                      "error":"Bad Request"
+                    }
+        '409':
+          description: 'Error: User already exists'
+          content:
+            application/json:
+              examples:
+                user:
+                  value: |-
+                    {
+                      "error":"User already exists"
                     }
       tags:
         - Authentication
