@@ -157,7 +157,7 @@ paths:
           description: Default error sample response
       tags:
         - Products
-    patch:
+    put:
       summary: Updates a single Product
       operationId: patch_product
       parameters:
@@ -187,6 +187,103 @@ paths:
           description: Default error sample response
       tags:
         - Products
+  /cart:
+    summary: To interact with the users cart
+    get:
+      summary: Return the current items added inside the cart
+      description: ''
+      operationId: get_cart
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Cart
+    delete:
+      summary: Removes all the items from the cart
+      description: ''
+      operationId: delete_cart
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Cart
+  /cart/items:
+    summary: To perform crud operation on the cart
+    post:
+      summary: Add an item to the cart
+      description: ''
+      operationId: create_cart_item
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Cart
+  /cart/items/{id}:
+    summary: To perform CRUD Operations on a single cart item
+    parameters:
+      - name: id
+        in: path
+        description: The id of the cart item.
+        required: true
+        schema:
+          type: string
+    put:
+      summary: Update quantity or other details of an item in the cart.
+      description: ''
+      operationId: update_cart_item
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Cart
+    delete:
+      summary: Delete a cart item
+      description: ''
+      operationId: delete_cart_item
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Cart
+  /checkout:
+    post:
+      summary: Process the checkout, which may include calculating the total etc
+      description: ''
+      operationId: checkout
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Checkout
+  /orders:
+    summary: To get details regarding your orders
+    get:
+      summary: Retrieve a list of orders placed by the current user.
+      description: ''
+      operationId: get_orders
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Orders
+  /orders/{id}:
+    summary: Return a specific order based on the id parameter
+    parameters:
+      - name: id
+        in: path
+        description: The id of the order.
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Return the specific order based on the id parameter
+      description: ''
+      operationId: get_order
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Orders
 components:
   schemas:
     User:
@@ -207,7 +304,7 @@ components:
         password:
           type: string
         created_at:
-          type: timestamp
+          type: string
       xml:
         name: User
     Address:
@@ -231,13 +328,13 @@ components:
         description:
           type: string
         price:
-          type: money
+          type: integer
         rating:
           type: integer
         created_at:
-          type: timestamp
+          type: string
         updated_at:
-          type: timestamp
+          type: string
       xml:
         name: Product
     Order:
@@ -246,13 +343,13 @@ components:
         id:
           type: string
         total_amount:
-          type: money
+          type: integer
         status:
           type: string
         created_at:
-          type: timestamp
+          type: string
         updated_at:
-          type: timestamp
+          type: string
         user_id:
           $ref: '#/components/schemas/User'
     OrderItem:
@@ -263,7 +360,7 @@ components:
         quantity:
           type: string
         total_amount:
-          type: money
+          type: integer
         product_id:
           $ref: '#/components/schemas/Product'
     CartItem:
@@ -272,9 +369,9 @@ components:
         id:
           type: string
         created_at:
-          type: timestamp
+          type: string
         updated_at:
-          type: timestamp
+          type: string
         cart_id:
           $ref: '#/components/schemas/Cart'
         product_id:
