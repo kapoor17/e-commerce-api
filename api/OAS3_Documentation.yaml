@@ -6,12 +6,18 @@ info:
   contact:
     email: himanshu.kapur17@gmail.com
     name: Himanshu Kapoor
+servers:
+  - url: http://localhost:4000
+tags:
+  - name: Authentication
+    description: Everything related to authenticating a user
+  - name: Products
+    description: Operation related to Products of our store
 paths:
-  /login:
-    summary: Logs In a user
-    description: Authentication route for logging in a user.
+  /auth/login:
     post:
       summary: Logs In a user
+      description: Authentication route for logging in a user.
       operationId: register_user
       requestBody:
         description: A user's credentials
@@ -27,7 +33,7 @@ paths:
         required: true
       responses:
         '200':
-          description: 'Success: User Logged in'
+          description: Success, User Logged in
           content:
             application/json:
               examples:
@@ -46,8 +52,18 @@ paths:
                     {
                       "error":"Bad Request"
                     }
+        '401':
+          description: Error, Unauthorized
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                      "error":"Wrong password"
+                    }
         '404':
-          description: 'Error: User not found'
+          description: Error, User not found
           content:
             application/json:
               examples:
@@ -56,19 +72,9 @@ paths:
                     {
                       "error":"User not found"
                     }
-        '401':
-          description: 'Error: Unauthorized'
-          content:
-           application/json:
-             examples:
-                error:
-                  value: |-
-                    {
-                      "error":"Wrong password"
-                    }
       tags:
         - Authentication
-  /register:
+  /auth/register:
     summary: Registers a new user
     description: Authentication route for registering new user
     post:
@@ -140,12 +146,12 @@ paths:
       summary: Gets a single Product
       operationId: get_product
       parameters:
-      - name: id
-        in: path
-        description: The id of the order.
-        required: true
-        schema:
-          type: string
+        - name: id
+          in: path
+          description: The id of the order.
+          required: true
+          schema:
+            type: string
       responses:
         default:
           description: Default error sample response
@@ -155,12 +161,12 @@ paths:
       summary: Updates a single Product
       operationId: patch_product
       parameters:
-      - name: id
-        in: path
-        description: The id of the order.
-        required: true
-        schema:
-          type: string
+        - name: id
+          in: path
+          description: The id of the order.
+          required: true
+          schema:
+            type: string
       responses:
         default:
           description: Default error sample response
@@ -170,12 +176,12 @@ paths:
       summary: Deletes a single Product
       operationId: delete_product
       parameters:
-      - name: id
-        in: path
-        description: The id of the order.
-        required: true
-        schema:
-          type: string
+        - name: id
+          in: path
+          description: The id of the order.
+          required: true
+          schema:
+            type: string
       responses:
         default:
           description: Default error sample response
@@ -200,18 +206,20 @@ components:
           type: string
         password:
           type: string
+        created_at:
+          type: timestamp
       xml:
         name: User
     Address:
       type: object
       properties:
-        address:
+        street:
           type: string
         country:
           type: string
         state:
           type: string
-        pincode:
+        zip:
           type: string
       xml:
         name: Address
@@ -220,13 +228,63 @@ components:
       properties:
         name:
           type: string
-        brand:
+        description:
           type: string
         price:
-          type: integer
+          type: money
         rating:
-          type: string
-        featured:
-          type: string
+          type: integer
+        created_at:
+          type: timestamp
+        updated_at:
+          type: timestamp
       xml:
-        name: Register
+        name: Product
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        total_amount:
+          type: money
+        status:
+          type: string
+        created_at:
+          type: timestamp
+        updated_at:
+          type: timestamp
+        user_id:
+          $ref: '#/components/schemas/User'
+    OrderItem:
+      type: object
+      properties:
+        id:
+          type: string
+        quantity:
+          type: string
+        total_amount:
+          type: money
+        product_id:
+          $ref: '#/components/schemas/Product'
+    CartItem:
+      type: object
+      properties:
+        id:
+          type: string
+        created_at:
+          type: timestamp
+        updated_at:
+          type: timestamp
+        cart_id:
+          $ref: '#/components/schemas/Cart'
+        product_id:
+          $ref: '#/components/schemas/Product'
+    Cart:
+      type: object
+      properties:
+        id:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
