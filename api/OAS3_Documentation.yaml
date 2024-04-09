@@ -6,6 +6,9 @@ info:
   contact:
     email: himanshu.kapur17@gmail.com
     name: Himanshu Kapoor
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
 servers:
   - url: http://localhost:4000
 tags:
