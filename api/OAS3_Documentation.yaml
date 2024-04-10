@@ -169,7 +169,9 @@ paths:
       tags:
         - Products
     post:
-      summary: Creates a new Product
+      summary: Creates a new Product (Admin Only)
+      security:
+        - admin_token: [] 
       operationId: create_product
       requestBody:
         description: A new product's data in json
@@ -256,8 +258,10 @@ paths:
       tags:
         - Products
     put:
-      summary: Updates a single Product
+      summary: Updates a single Product (Admin Only)
       operationId: patch_product
+      security:
+        - admin_token: [] 
       parameters:
         - name: product_id
           in: path
@@ -320,8 +324,10 @@ paths:
       tags:
         - Products
     delete:
-      summary: Deletes a single Product
+      summary: Deletes a single Product (Admin Only)
       operationId: delete_product
+      security:
+        - admin_token: [] 
       parameters:
         - name: product_id
           in: path
@@ -382,6 +388,8 @@ paths:
     get:
       summary: Return the current items added inside the cart
       operationId: get_cart
+      security:
+        - general_token: [] 
       responses:
         '200':
           description: Success
@@ -436,8 +444,10 @@ paths:
   /cart/{cart_id}:
     summary: To perform crud operation on the cart
     delete:
-      summary: Remove a cart instance
+      summary: Remove a cart instance (Admin Only)
       operationId: delete_cart
+      security:
+        - admin_token: [] 
       parameters:
         - name: cart_id
           in: path
@@ -487,6 +497,8 @@ paths:
       summary: Add an item to the cart
       description: ''
       operationId: create_cart_item
+      security:
+        - general_token: [] 
       requestBody:
         description: A cart item json
         content:
@@ -534,6 +546,8 @@ paths:
       summary: Update quantity or other details of an item in the cart.
       description: ''
       operationId: update_cart_item
+      security:
+        - general_token: [] 
       requestBody:
         description: A cart item json
         content:
@@ -582,6 +596,8 @@ paths:
       summary: Delete a cart item
       description: ''
       operationId: delete_cart_item
+      security:
+        - general_token: [] 
       responses:
         '200':
           description: Success
@@ -625,6 +641,8 @@ paths:
       summary: Process the checkout, which may include calculating the total etc
       description: ''
       operationId: checkout
+      security:
+        - general_token: [] 
       requestBody:
         description: A Cart of the user
         content:
@@ -678,6 +696,8 @@ paths:
       summary: Retrieve a list of orders placed by the current user.
       description: ''
       operationId: get_orders
+      security:
+        - general_token: [] 
       responses:
         '200':
           description: Success
@@ -744,6 +764,8 @@ paths:
       summary: Return the specific order based on the id parameter
       description: ''
       operationId: get_order
+      security:
+        - general_token: [] 
       responses:
         '200':
           description: Success
@@ -956,3 +978,12 @@ components:
           items: 
             $ref: '#/components/schemas/CartItem'
           description: Only for visualization purpose, not included in the real DB
+  securitySchemes:
+    general_token:
+      type: apiKey
+      name: X-Api-Token  # Replace with your actual header name for the token
+      in: header
+    admin_token:
+      type: apiKey
+      name: X-Api-Token  # Can reuse the same header name for readability
+      in: header
