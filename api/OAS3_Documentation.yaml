@@ -18,9 +18,9 @@ tags:
     description: Operation related to Products of our store
 paths:
   /auth/login:
+    summary: Logs in a new user
     post:
-      summary: Logs In a user
-      description: Authentication route for logging in a user.
+      summary: Logs in a user
       operationId: register_user
       requestBody:
         description: A user's credentials
@@ -79,7 +79,6 @@ paths:
         - Authentication
   /auth/register:
     summary: Registers a new user
-    description: Authentication route for registering new user
     post:
       summary: Registers a new user
       operationId: login_user
@@ -115,7 +114,7 @@ paths:
           content:
             application/json:
               examples:
-                user:
+                error:
                   value: |-
                     {
                       "error":"User already exists"
@@ -124,23 +123,70 @@ paths:
         - Authentication
   /products:
     summary: Fetches or creates products
-    description: Route to interact with our products
     get:
-      summary: All products in our inventory
-      description: Returns all products in our inventory
+      summary: Fetches all products in our inventory
       operationId: get_products
       responses:
         '200':
           description: Success
+          content:
+            application/json:
+              examples:
+                Array of products:
+                  value: |-
+                    [
+                        {
+                            "name": "Product A",
+                            "description": "This is the description for Product A.",
+                            "price": 20,
+                            "rating": 4,
+                            "created_at": "2024-04-10T08:00:00Z",
+                            "updated_at": "2024-04-10T08:00:00Z"
+                        },
+                        {
+                            "name": "Product B",
+                            "description": "This is the description for Product B.",
+                            "price": 30,
+                            "rating": 5,
+                            "created_at": "2024-04-09T10:00:00Z",
+                            "updated_at": "2024-04-09T10:00:00Z"
+                        },
+                        {
+                            "name": "Product C",
+                            "description": "This is the description for Product C.",
+                            "price": 25,
+                            "rating": 4,
+                            "created_at": "2024-04-08T12:00:00Z",
+                            "updated_at": "2024-04-08T12:00:00Z"
+                        }
+                    ]
       tags:
         - Products
     post:
       summary: Creates a new Product
-      description: Creates a new product for users to buy
       operationId: create_product
+      requestBody:
+        description: A new product's data in json
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
       responses:
-        default:
-          description: Default error sample response
+        '200':
+          description: 'Success, Product added'
+          content:
+            application/json:
+              examples:
+                Product:
+                  value: |-
+                    {
+                      "name": "Product C",
+                      "description": "This is the description for Product C.",
+                      "price": 25,
+                      "rating": 4,
+                      "created_at": "2024-04-08T12:00:00Z",
+                      "updated_at": "2024-04-08T12:00:00Z"
+                    }
       tags:
         - Products
   /products/{id}:
@@ -156,8 +202,31 @@ paths:
           schema:
             type: string
       responses:
-        default:
-          description: Default error sample response
+        '200':
+          description: 'Success'
+          content:
+            application/json:
+              examples:
+                Product:
+                  value: |-
+                    {
+                      "name": "Product C",
+                      "description": "This is the description for Product C.",
+                      "price": 25,
+                      "rating": 4,
+                      "created_at": "2024-04-08T12:00:00Z",
+                      "updated_at": "2024-04-08T12:00:00Z"
+                    }
+        '404':
+          description: 'Error, product doesnt exists'
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                      "error": "Product doesnt exist"
+                    }
       tags:
         - Products
     put:
@@ -170,9 +239,38 @@ paths:
           required: true
           schema:
             type: string
+      requestBody:
+        description: A product's data in json
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
       responses:
-        default:
-          description: Default error sample response
+        '200':
+          description: 'Success, Product updated'
+          content:
+            application/json:
+              examples:
+                Product:
+                  value: |-
+                    {
+                      "name": "Product C",
+                      "description": "This is the description for Product C.",
+                      "price": 25,
+                      "rating": 4,
+                      "created_at": "2024-04-08T12:00:00Z",
+                      "updated_at": "2024-04-08T12:00:00Z"
+                    }
+        '404':
+          description: "Error, product doesn't exists"
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                      "error": "Product doesnt exist"
+                    }
       tags:
         - Products
     delete:
@@ -186,8 +284,31 @@ paths:
           schema:
             type: string
       responses:
-        default:
-          description: Default error sample response
+        '200':
+          description: 'Success, Product deleted'
+          content:
+            application/json:
+              examples:
+                Product:
+                  value: |-
+                    {
+                      "name": "Product C",
+                      "description": "This is the description for Product C.",
+                      "price": 25,
+                      "rating": 4,
+                      "created_at": "2024-04-08T12:00:00Z",
+                      "updated_at": "2024-04-08T12:00:00Z"
+                    }
+        '404':
+          description: 'Error, product doesnt exists'
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                      "error": "Product doesnt exist"
+                    }
       tags:
         - Products
   /cart:
