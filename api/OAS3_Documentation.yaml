@@ -13,9 +13,15 @@ servers:
   - url: http://localhost:4000
 tags:
   - name: Authentication
-    description: Everything related to authenticating a user
+    description: Operations related to authenticating a user
   - name: Products
-    description: Operation related to Products of our store
+    description: Operations related to Products of our store
+  - name: Cart
+    description: Operations related to the cart of our current user
+  - name: Checkout
+    description: Operations related to placing a new order
+  - name: Orders
+    description: Operations related to the orders of our current user
 paths:
   /auth/login:
     summary: Logs in a new user
@@ -35,7 +41,7 @@ paths:
                   type: string
         required: true
       responses:
-        '200':
+        200:
           description: Success, User Logged in
           content:
             application/json:
@@ -45,8 +51,8 @@ paths:
                     {
                       "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
                     }
-        '400':
-          description: 'Error: Bad Request'
+        400:
+          description: Error, Bad Request
           content:
             application/json:
               examples:
@@ -55,7 +61,7 @@ paths:
                     {
                       "error":"Bad Request"
                     }
-        '401':
+        401:
           description: Error, Unauthorized
           content:
             application/json:
@@ -65,7 +71,7 @@ paths:
                     {
                       "error":"Wrong password"
                     }
-        '404':
+        404:
           description: Error, User not found
           content:
             application/json:
@@ -89,8 +95,8 @@ paths:
             schema:
               $ref: '#/components/schemas/User'
       responses:
-        '200':
-          description: 'Success: User Created'
+        200:
+          description: Success, User Created
           content:
             application/json:
               examples:
@@ -99,8 +105,8 @@ paths:
                     {
                       "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
                     }
-        '400':
-          description: 'Error: Bad Request'
+        400:
+          description: Error, Bad Request
           content:
             application/json:
               examples:
@@ -109,8 +115,8 @@ paths:
                     {
                       "error":"Bad Request"
                     }
-        '409':
-          description: 'Error: User already exists'
+        409:
+          description: Error, User already exists
           content:
             application/json:
               examples:
@@ -127,7 +133,7 @@ paths:
       summary: Fetches all products in our inventory
       operationId: get_products
       responses:
-        '200':
+        200:
           description: Success
           content:
             application/json:
@@ -172,8 +178,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Product'
       responses:
-        '200':
-          description: 'Success, Product added'
+        200:
+          description: Success, Product added
           content:
             application/json:
               examples:
@@ -187,45 +193,65 @@ paths:
                       "created_at": "2024-04-08T12:00:00Z",
                       "updated_at": "2024-04-08T12:00:00Z"
                     }
-      tags:
-        - Products
-  /products/{id}:
-    summary: Interact with a single product
-    get:
-      summary: Gets a single Product
-      operationId: get_product
-      parameters:
-        - name: id
-          in: path
-          description: The id of the order.
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 'Success'
-          content:
-            application/json:
-              examples:
-                Product:
-                  value: |-
-                    {
-                      "name": "Product C",
-                      "description": "This is the description for Product C.",
-                      "price": 25,
-                      "rating": 4,
-                      "created_at": "2024-04-08T12:00:00Z",
-                      "updated_at": "2024-04-08T12:00:00Z"
-                    }
-        '404':
-          description: 'Error, product doesnt exists'
+        400:
+          description: Error, Bad Request
           content:
             application/json:
               examples:
                 error:
                   value: |-
                     {
-                      "error": "Product doesnt exist"
+                      "error":"Bad Request"
+                    }
+        401:
+          description: Error, Unauthorized
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                      "error":"token invalid"
+                    }
+      tags:
+        - Products
+  /products/{product_id}:
+    summary: Interact with a single product
+    get:
+      summary: Gets a single Product
+      operationId: get_product
+      parameters:
+        - name: product_id
+          in: path
+          description: The id of the order.
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              examples:
+                Product:
+                  value: |-
+                    {
+                      "name": "Product C",
+                      "description": "This is the description for Product C.",
+                      "price": 25,
+                      "rating": 4,
+                      "created_at": "2024-04-08T12:00:00Z",
+                      "updated_at": "2024-04-08T12:00:00Z"
+                    }
+        404:
+          description: Error, product doesn't exists
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                      "error": "Invalid product_id"
                     }
       tags:
         - Products
@@ -233,7 +259,7 @@ paths:
       summary: Updates a single Product
       operationId: patch_product
       parameters:
-        - name: id
+        - name: product_id
           in: path
           description: The id of the order.
           required: true
@@ -246,8 +272,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Product'
       responses:
-        '200':
-          description: 'Success, Product updated'
+        200:
+          description: Success, Product updated
           content:
             application/json:
               examples:
@@ -261,15 +287,35 @@ paths:
                       "created_at": "2024-04-08T12:00:00Z",
                       "updated_at": "2024-04-08T12:00:00Z"
                     }
-        '404':
-          description: "Error, product doesn't exists"
+        404:
+          description: Error, product doesn't exists
           content:
             application/json:
               examples:
                 error:
                   value: |-
                     {
-                      "error": "Product doesnt exist"
+                      "error": "Invalid product_id"
+                    }
+        400:
+          description: Error, Bad Request
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                      "error": "Bad Request"
+                    }
+        401:
+          description: Error, Unauthorized
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                      "error": "token invalid"
                     }
       tags:
         - Products
@@ -277,15 +323,15 @@ paths:
       summary: Deletes a single Product
       operationId: delete_product
       parameters:
-        - name: id
+        - name: product_id
           in: path
           description: The id of the order.
           required: true
           schema:
             type: string
       responses:
-        '200':
-          description: 'Success, Product deleted'
+        200:
+          description: Success, Product deleted
           content:
             application/json:
               examples:
@@ -299,15 +345,35 @@ paths:
                       "created_at": "2024-04-08T12:00:00Z",
                       "updated_at": "2024-04-08T12:00:00Z"
                     }
-        '404':
-          description: 'Error, product doesnt exists'
+        404:
+          description: Error, product doesn't exists
           content:
             application/json:
               examples:
                 error:
                   value: |-
                     {
-                      "error": "Product doesnt exist"
+                      "error": "Invalid product_id"
+                    }
+        400:
+          description: Error, Bad Request
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                      "error": "Bad Request"
+                    }
+        401:
+          description: Error, Unauthorized
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                      "error": "token invalid"
                     }
       tags:
         - Products
@@ -315,20 +381,104 @@ paths:
     summary: To interact with the users cart
     get:
       summary: Return the current items added inside the cart
-      description: ''
       operationId: get_cart
       responses:
-        default:
-          description: Default error sample response
+        200:
+          description: Success
+          content:
+            application/json:
+              examples:
+                Cart Items:
+                  value: |-
+                    {
+                        "id": "c0434c42-3d9d-4c9f-b86d-29b0f81f44bc",
+                        "created_at": "2024-04-10T08:00:00Z",
+                        "updated_at": "2024-04-10T08:00:00Z",
+                        "items": [
+                          {
+                            "id": "384e346e-b936-4e0a-b6c7-7fbcb5d7438e",
+                            "created_at": "2024-04-10T08:00:00Z",
+                            "updated_at": "2024-04-10T08:00:00Z",
+                            "cart_id": "c0434c42-3d9d-4c9f-b86d-29b0f81f44bc",
+                            "product_id": "d8676c24-1e1a-4e63-8b09-4d43b5e9ee9d",
+                            "quantity": 2
+                          },
+                          {
+                            "id": "384e346e-b936-4e0a-b6c7-7fbcb5d7438e",
+                            "created_at": "2024-04-10T08:00:00Z",
+                            "updated_at": "2024-04-10T08:00:00Z",
+                            "cart_id": "c0434c42-3d9d-4c9f-b86d-29b0f81f44bc",
+                            "product_id": "d8676c24-1e1a-4e63-8b09-4d43b5e9fe9d",
+                            "quantity": 1
+                          },
+                          {
+                            "id": "384e346e-b936-4e0a-b6c7-7fbcb5d7438e",
+                            "created_at": "2024-04-10T08:00:00Z",
+                            "updated_at": "2024-04-10T08:00:00Z",
+                            "cart_id": "c0434c42-3d9d-4c9f-b86d-29b0f81f44bc",
+                            "product_id": "d8676c24-1e1a-4e63-8b09-4d43b5e9ge9d",
+                            "quantity": 3
+                          }
+                        ]
+                    }
+        401:
+          description: Error, Unauthorized
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                      "error": "token invalid"
+                    }
       tags:
         - Cart
+  /cart/{cart_id}:
+    summary: To perform crud operation on the cart
     delete:
-      summary: Removes all the items from the cart
-      description: ''
+      summary: Remove a cart instance
       operationId: delete_cart
+      parameters:
+      - name: cart_id
+        in: path
+        description: The id of the cart.
+        required: true
+        schema:
+          type: string
       responses:
-        default:
-          description: Default error sample response
+        200:
+          description: Success
+          content:
+            application/json:
+              examples:
+                Cart:
+                  value: |-
+                    {
+                        "id": "c0434c42-3d9d-4c9f-b86d-29b0f81f44bc",
+                        "created_at": "2024-04-10T08:00:00Z",
+                        "updated_at": "2024-04-10T08:00:00Z",
+                        "user_id": "e0434c42-3asf9-4c9f-b86d-2sb0f81f24bs"
+                    }
+        404:
+          description: Error, cart does not exist
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                        "error": "invalid cart_id"
+                    }
+        401:
+          description: Error, Unauthorized
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                      "error": "token invalid"
+                    }
       tags:
         - Cart
   /cart/items:
@@ -337,15 +487,44 @@ paths:
       summary: Add an item to the cart
       description: ''
       operationId: create_cart_item
+      requestBody:
+        description: A cart item json
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartItem'
       responses:
-        default:
-          description: Default error sample response
+        200:
+          description: Success
+          content:
+            application/json:
+              examples:
+                Cart Items:
+                  value: |-
+                    {
+                      "id": "384e346e-b936-4e0a-b6c7-7fbcb5d7438e",
+                      "created_at": "2024-04-10T08:00:00Z",
+                      "updated_at": "2024-04-10T08:00:00Z",
+                      "cart_id": "c0434c42-3d9d-4c9f-b86d-29b0f81f44bc",
+                      "product_id": "d8676c24-1e1a-4e63-8b09-4d43b5e9ge9d",
+                      "quantity": 3
+                    }
+        401:
+          description: Error, Unauthorized
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                      "error": "token invalid"
+                    }
       tags:
         - Cart
-  /cart/items/{id}:
+  /cart/items/{cart_item_id}:
     summary: To perform CRUD Operations on a single cart item
     parameters:
-      - name: id
+      - name: cart_item_id
         in: path
         description: The id of the cart item.
         required: true
@@ -355,9 +534,48 @@ paths:
       summary: Update quantity or other details of an item in the cart.
       description: ''
       operationId: update_cart_item
+      requestBody:
+        description: A cart item json
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartItem'
       responses:
-        default:
-          description: Default error sample response
+        200:
+          description: Success
+          content:
+            application/json:
+              examples:
+                Cart Items:
+                  value: |-
+                    {
+                      "id": "384e346e-b936-4e0a-b6c7-7fbcb5d7438e",
+                      "created_at": "2024-04-10T08:00:00Z",
+                      "updated_at": "2024-04-10T08:00:00Z",
+                      "cart_id": "c0434c42-3d9d-4c9f-b86d-29b0f81f44bc",
+                      "product_id": "d8676c24-1e1a-4e63-8b09-4d43b5e9ge9d",
+                      "quantity": 3
+                    }
+        404:
+          description: Error, cart item does not exist
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                        "error": "cart_item_id invalid"
+                    }
+        401:
+          description: Error, Unauthorized
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                      "error": "token invalid"
+                    }
       tags:
         - Cart
     delete:
@@ -365,8 +583,41 @@ paths:
       description: ''
       operationId: delete_cart_item
       responses:
-        default:
-          description: Default error sample response
+        200:
+          description: Success
+          content:
+            application/json:
+              examples:
+                Cart Items:
+                  value: |-
+                    {
+                      "id": "384e346e-b936-4e0a-b6c7-7fbcb5d7438e",
+                      "created_at": "2024-04-10T08:00:00Z",
+                      "updated_at": "2024-04-10T08:00:00Z",
+                      "cart_id": "c0434c42-3d9d-4c9f-b86d-29b0f81f44bc",
+                      "product_id": "d8676c24-1e1a-4e63-8b09-4d43b5e9ge9d",
+                      "quantity": 3
+                    }
+        404:
+          description: Error, cart item does not exist
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                        "error": "cart_item_id invalid"
+                    }
+        401:
+          description: Error, Unauthorized
+          content:
+            application/json:
+              examples:
+                error:
+                  value: |-
+                    {
+                      "error": "token invalid"
+                    }
       tags:
         - Cart
   /checkout:
@@ -509,3 +760,5 @@ components:
           type: string
         updated_at:
           type: string
+        user_id:
+          $ref: '#/components/schemas/User'
