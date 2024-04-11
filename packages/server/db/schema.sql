@@ -1,3 +1,5 @@
+-- Address related queries
+
 CREATE TABLE Address (
     id uuid DEFAULT uuid_generate_v4(),
     street varchar(50) NOT NULL,
@@ -16,12 +18,7 @@ ON Address (state);
 CREATE INDEX address_country_idx
 ON Address (country);
 
-CREATE TABLE Cart (
-    id uuid DEFAULT uuid_generate_v4(),
-    customer_id uuid,
-    created_at timestamp DEFAULT current_timestamp,
-    updated_at timestamp DEFAULT current_timestamp
-);
+-- Customer related queries
 
 CREATE TABLE Customer (
     id uuid DEFAULT uuid_generate_v4(),
@@ -36,17 +33,13 @@ CREATE TABLE Customer (
     PRIMARY KEY(id)
 );
 
-ALTER TABLE Cart
-ADD FOREIGN KEY (customer_id) REFERENCES Customer(id);
-
-ALTER TABLE Customer
-ADD FOREIGN KEY (cart_id) REFERENCES Cart(id);
-
 CREATE INDEX customer_first_name_last_name_idx
 ON Customer (first_name, last_name);
 
 CREATE INDEX customer_email_idx
 ON Customer (email);
+
+-- Order related queries
 
 CREATE TABLE "Order" (
     id uuid DEFAULT uuid_generate_v4(),
@@ -65,6 +58,8 @@ ON "Order" (status);
 CREATE INDEX order_total_amount_idx
 ON "Order" (total_amount DESC);
 
+-- Brand related queries
+
 CREATE TABLE Brand (
     id uuid DEFAULT uuid_generate_v4(),
     name varchar(50) UNIQUE NOT NULL,
@@ -73,6 +68,8 @@ CREATE TABLE Brand (
     updated_at timestamp DEFAULT current_timestamp,
     PRIMARY KEY (id)
 );
+
+-- Product related queries
 
 CREATE TABLE Product (
     id uuid DEFAULT uuid_generate_v4(),
@@ -108,6 +105,8 @@ ON Product (rating);
 CREATE INDEX product_category_idx
 ON Product (category);
 
+-- Order Item related queries
+
 CREATE TABLE OrderItem (
     id uuid DEFAULT uuid_generate_v4(),
     quantity smallint NOT NULL,
@@ -123,6 +122,17 @@ ADD CHECK (quantity >= 0);
 CREATE INDEX orderitem_order_id_idx
 ON OrderItem (order_id);
 
+-- Cart Item related queries
+
+CREATE TABLE Cart (
+    id uuid DEFAULT uuid_generate_v4(),
+    customer_id uuid,
+    created_at timestamp DEFAULT current_timestamp,
+    updated_at timestamp DEFAULT current_timestamp
+);
+
+-- Cart Item related queries
+
 CREATE TABLE CartItem (
     id uuid DEFAULT uuid_generate_v4(),
     quantity smallint NOT NULL,
@@ -137,3 +147,11 @@ ADD CHECK (quantity >= 1 AND quantity <=5);
 
 CREATE INDEX cartitem_cart_id_idx
 ON CartItem (cart_id);
+
+-- Cart - Customer 1-1 Relation
+
+ALTER TABLE Cart
+ADD FOREIGN KEY (customer_id) REFERENCES Customer(id);
+
+ALTER TABLE Customer
+ADD FOREIGN KEY (cart_id) REFERENCES Cart(id);
