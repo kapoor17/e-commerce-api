@@ -1,6 +1,6 @@
 
-import pkg from 'pg';
-const { Pool } = pkg;
+import pg from 'pg';
+const { Pool } = pg;
 
 const pool = new Pool({
     user: process.env.PGUSER,
