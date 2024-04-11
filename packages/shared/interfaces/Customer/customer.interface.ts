@@ -7,3 +7,5 @@ export interface Customer {
     address_id: string,
     created_at: string,
 }
+
+export type PublicCustomer = Omit<Customer, 'password'>
