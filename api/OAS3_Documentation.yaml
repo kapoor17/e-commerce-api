@@ -13,23 +13,23 @@ servers:
   - url: http://localhost:4000
 tags:
   - name: Authentication
-    description: Operations related to authenticating a user
+    description: Operations related to authenticating a customer
   - name: Products
     description: Operations related to Products of our store
   - name: Cart
-    description: Operations related to the cart of our current user
+    description: Operations related to the cart of our current customer
   - name: Checkout
     description: Operations related to placing a new order
   - name: Orders
-    description: Operations related to the orders of our current user
+    description: Operations related to the orders of our current customer
 paths:
   /auth/login:
-    summary: Logs in a new user
+    summary: Logs in a new customer
     post:
-      summary: Logs in a user
-      operationId: register_user
+      summary: Logs in a customer
+      operationId: register_customer
       requestBody:
-        description: A user's credentials
+        description: A customer's credentials
         content:
           application/json:
             schema:
@@ -42,11 +42,11 @@ paths:
         required: true
       responses:
         '200':
-          description: Success, User Logged in
+          description: Success, Customer Logged in
           content:
             application/json:
               examples:
-                user:
+                customer:
                   value: |-
                     {
                       "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
@@ -72,35 +72,35 @@ paths:
                       "error":"Wrong password"
                     }
         '404':
-          description: Error, User not found
+          description: Error, Customer not found
           content:
             application/json:
               examples:
                 error:
                   value: |-
                     {
-                      "error":"User not found"
+                      "error":"Customer not found"
                     }
       tags:
         - Authentication
   /auth/register:
-    summary: Registers a new user
+    summary: Registers a new customer
     post:
-      summary: Registers a new user
-      operationId: login_user
+      summary: Registers a new customer
+      operationId: login_customer
       requestBody:
-        description: A user's credentials and information
+        description: A customer's credentials and information
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/Customer'
       responses:
         '200':
-          description: Success, User Created
+          description: Success, Customer Created
           content:
             application/json:
               examples:
-                user:
+                customer:
                   value: |-
                     {
                       "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
@@ -116,14 +116,14 @@ paths:
                       "error":"Bad Request"
                     }
         '409':
-          description: Error, User already exists
+          description: Error, Customer already exists
           content:
             application/json:
               examples:
                 error:
                   value: |-
                     {
-                      "error":"User already exists"
+                      "error":"Customer already exists"
                     }
       tags:
         - Authentication
@@ -145,6 +145,11 @@ paths:
                             "name": "Product A",
                             "description": "This is the description for Product A.",
                             "price": 20,
+                            "old_price": 15,
+                            "brand_id": "ae6a87d4-507e-4e88-a555-a19ee4cd9314",
+                            "category": "pants",
+                            "stock_level": 100,
+                            "image_url": null,
                             "rating": 4,
                             "created_at": "2024-04-10T08:00:00Z",
                             "updated_at": "2024-04-10T08:00:00Z"
@@ -153,6 +158,11 @@ paths:
                             "name": "Product B",
                             "description": "This is the description for Product B.",
                             "price": 30,
+                            "old_price": 15,
+                            "brand_id": "ae6a87d4-507e-4e88-a555-a19ee4cd9314",
+                            "category": "bags",
+                            "stock_level": 100,
+                            "image_url": null,
                             "rating": 5,
                             "created_at": "2024-04-09T10:00:00Z",
                             "updated_at": "2024-04-09T10:00:00Z"
@@ -161,6 +171,11 @@ paths:
                             "name": "Product C",
                             "description": "This is the description for Product C.",
                             "price": 25,
+                            "old_price": 15,
+                            "brand_id": "ae6a87d4-507e-4e88-a555-a19ee4cd9314",
+                            "category": "shirts",
+                            "stock_level": 100,
+                            "image_url": null,
                             "rating": 4,
                             "created_at": "2024-04-08T12:00:00Z",
                             "updated_at": "2024-04-08T12:00:00Z"
@@ -191,6 +206,11 @@ paths:
                       "name": "Product C",
                       "description": "This is the description for Product C.",
                       "price": 25,
+                      "old_price": 15,
+                      "brand_id": "ae6a87d4-507e-4e88-a555-a19ee4cd9314",
+                      "category": "shirts",
+                      "stock_level": 100,
+                      "image_url": null,
                       "rating": 4,
                       "created_at": "2024-04-08T12:00:00Z",
                       "updated_at": "2024-04-08T12:00:00Z"
@@ -217,6 +237,69 @@ paths:
                     }
       tags:
         - Products
+  /products/{category}:
+    summary: Fetches or creates products
+    get:
+      summary: Fetches all products in our inventory
+      operationId: get_products_by_category
+      parameters:
+        - name: category
+          in: path
+          description: The id of the order.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              examples:
+                Array of products:
+                  value: |-
+                    [
+                        {
+                            "name": "Product A",
+                            "description": "This is the description for Product A.",
+                            "price": 20,
+                            "old_price": 15,
+                            "brand_id": "ae6a87d4-507e-4e88-a555-a19ee4cd9314",
+                            "category": "bags",
+                            "stock_level": 100,
+                            "image_url": null,
+                            "rating": 4,
+                            "created_at": "2024-04-10T08:00:00Z",
+                            "updated_at": "2024-04-10T08:00:00Z"
+                        },
+                        {
+                            "name": "Product B",
+                            "description": "This is the description for Product B.",
+                            "price": 30,
+                            "old_price": 15,
+                            "brand_id": "ae6a87d4-507e-4e88-a555-a19ee4cd9314",
+                            "category": "bags",
+                            "stock_level": 100,
+                            "image_url": null,
+                            "rating": 5,
+                            "created_at": "2024-04-09T10:00:00Z",
+                            "updated_at": "2024-04-09T10:00:00Z"
+                        },
+                        {
+                            "name": "Product C",
+                            "description": "This is the description for Product C.",
+                            "price": 25,
+                            "old_price": 15,
+                            "brand_id": "ae6a87d4-507e-4e88-a555-a19ee4cd9314",
+                            "category": "bags",
+                            "stock_level": 100,
+                            "image_url": null,
+                            "rating": 4,
+                            "created_at": "2024-04-08T12:00:00Z",
+                            "updated_at": "2024-04-08T12:00:00Z"
+                        }
+                    ]
+      tags:
+        - Products
   /products/{product_id}:
     summary: Interact with a single product
     get:
@@ -241,6 +324,11 @@ paths:
                       "name": "Product C",
                       "description": "This is the description for Product C.",
                       "price": 25,
+                      "old_price": 15,
+                      "brand_id": "ae6a87d4-507e-4e88-a555-a19ee4cd9314",
+                      "category": "bags",
+                      "stock_level": 100,
+                      "image_url": null,
                       "rating": 4,
                       "created_at": "2024-04-08T12:00:00Z",
                       "updated_at": "2024-04-08T12:00:00Z"
@@ -287,6 +375,11 @@ paths:
                       "name": "Product C",
                       "description": "This is the description for Product C.",
                       "price": 25,
+                      "old_price": 15,
+                      "brand_id": "ae6a87d4-507e-4e88-a555-a19ee4cd9314",
+                      "category": "bags",
+                      "stock_level": 100,
+                      "image_url": null,
                       "rating": 4,
                       "created_at": "2024-04-08T12:00:00Z",
                       "updated_at": "2024-04-08T12:00:00Z"
@@ -347,6 +440,11 @@ paths:
                       "name": "Product C",
                       "description": "This is the description for Product C.",
                       "price": 25,
+                      "old_price": 15,
+                      "brand_id": "ae6a87d4-507e-4e88-a555-a19ee4cd9314",
+                      "category": "bags",
+                      "stock_level": 100,
+                      "image_url": null,
                       "rating": 4,
                       "created_at": "2024-04-08T12:00:00Z",
                       "updated_at": "2024-04-08T12:00:00Z"
@@ -384,7 +482,7 @@ paths:
       tags:
         - Products
   /cart:
-    summary: To interact with the users cart
+    summary: To interact with the customers cart
     get:
       summary: Return the current items added inside the cart
       operationId: get_cart
@@ -467,7 +565,7 @@ paths:
                         "id": "c0434c42-3d9d-4c9f-b86d-29b0f81f44bc",
                         "created_at": "2024-04-10T08:00:00Z",
                         "updated_at": "2024-04-10T08:00:00Z",
-                        "user_id": "e0434c42-3asf9-4c9f-b86d-2sb0f81f24bs"
+                        "customer_id": "e0434c42-3asf9-4c9f-b86d-2sb0f81f24bs"
                     }
         '401':
           description: Error, Unauthorized
@@ -644,7 +742,7 @@ paths:
       security:
         - general_token: [] 
       requestBody:
-        description: A Cart of the user
+        description: A Cart of the customer
         content:
           application/json:
             schema:
@@ -666,7 +764,7 @@ paths:
                       "payment_method": "credit_card",
                       "created_at": "2024-04-10T08:00:00Z",
                       "updated_at": "2024-04-10T08:00:00Z",
-                      "user_id": "a5d68e1d-6292-493e-bb09-f28b7889ae0c"
+                      "customer_id": "a5d68e1d-6292-493e-bb09-f28b7889ae0c"
                     }
         '400':
           description: Error, Bad Request
@@ -693,7 +791,7 @@ paths:
   /orders:
     summary: To get details regarding your orders
     get:
-      summary: Retrieve a list of orders placed by the current user.
+      summary: Retrieve a list of orders placed by the current customer.
       description: ''
       operationId: get_orders
       security:
@@ -718,7 +816,7 @@ paths:
                             "created_at": "2024-04-10T08:00:00Z",
                             "updated_at": "2024-04-10T08:00:00Z",
                             "payment_method": "credit_card",
-                            "user_id": "a5d68e1d-6292-493e-bb09-f28b7889ae0c"
+                            "customer_id": "a5d68e1d-6292-493e-bb09-f28b7889ae0c"
                         },
                         {
                             "id": "f83a5391-8e9e-41b0-ae09-38c9a2a47c4e",
@@ -727,7 +825,7 @@ paths:
                             "created_at": "2024-04-09T10:00:00Z",
                             "updated_at": "2024-04-09T12:00:00Z",
                             "payment_method": "paypal",
-                            "user_id": "a5d68e1d-6292-493e-bb09-f28b7889ae0c"
+                            "customer_id": "a5d68e1d-6292-493e-bb09-f28b7889ae0c"
                         },
                         {
                             "id": "c57f0872-1e7e-48b2-aa27-bfd22f567a9f",
@@ -736,7 +834,7 @@ paths:
                             "created_at": "2024-04-08T12:00:00Z",
                             "updated_at": "2024-04-08T14:00:00Z",
                             "payment_method": "stripe",
-                            "user_id": "a5d68e1d-6292-493e-bb09-f28b7889ae0c"
+                            "customer_id": "a5d68e1d-6292-493e-bb09-f28b7889ae0c"
                         }
                     ]
         '401':
@@ -783,7 +881,7 @@ paths:
                       "created_at": "2024-04-10T08:00:00Z",
                       "updated_at": "2024-04-10T08:00:00Z",
                       "payment_method": "credit_card",
-                      "user_id": "a5d68e1d-6292-493e-bb09-f28b7889ae0c"
+                      "customer_id": "a5d68e1d-6292-493e-bb09-f28b7889ae0c"
                     }
         '404':
           description: Error, Order not found
@@ -809,7 +907,7 @@ paths:
         - Orders
 components:
   schemas:
-    User:
+    Customer:
       type: object
       properties:
         id:
@@ -821,9 +919,6 @@ components:
         last_name:
           type: string
           example: Kapoor
-        age:
-          type: integer
-          example: 21
         gender:
           type: string
           example: Male
@@ -840,8 +935,12 @@ components:
         created_at:
           type: string
           format: date-time
+        cart_id:
+          allOf:
+            - $ref: '#/components/schemas/Cart'
+            - description: References only the id
       xml:
-        name: User
+        name: Customer
     Address:
       type: object
       properties:
@@ -862,6 +961,24 @@ components:
           example: 160036
       xml:
         name: Address
+    Brand:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+        name:
+          type: string
+          example: Table
+        description:
+          type: string
+          example: A four legged table
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
     Product:
       type: object
       properties:
@@ -871,15 +988,28 @@ components:
         name:
           type: string
           example: Table
-        brand: 
-          type: string
-          example: Ikea
         description:
           type: string
           example: A four legged table
         price:
           type: integer
-          example: 25
+          example: 24
+        old_price:
+          type: integer
+          example: 50
+        brand_id:
+          allOf:
+            - $ref: '#/components/schemas/Brand'
+            - description: References only the id
+        category:
+          type: string
+          example: bag
+        stock_level:
+          type: integer
+          example: 100
+        image_url:
+          type: string
+          example: null
         rating:
           type: integer
           example: 4
@@ -912,9 +1042,9 @@ components:
         payment_method:
           type: string
           example: credit_card
-        user_id:
+        customer_id:
           allOf:
-            - $ref: '#/components/schemas/User'
+            - $ref: '#/components/schemas/Customer'
             - description: References only the id
         items:
           type: array
@@ -936,6 +1066,10 @@ components:
         product_id:
           allOf:
             - $ref: '#/components/schemas/Product'
+            - description: References only the id
+        order_id:
+          allOf:
+            - $ref: '#/components/schemas/Order'
             - description: References only the id
     CartItem:
       type: object
@@ -969,9 +1103,9 @@ components:
         updated_at:
           type: string
           format: date-time
-        user_id:
+        customer_id:
           allOf:
-            - $ref: '#/components/schemas/User'
+            - $ref: '#/components/schemas/Customer'
             - description: References only the id
         items:
           type: array
