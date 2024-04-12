@@ -6,11 +6,18 @@ const pool = new Pool({
     user: process.env.PGUSER,
     host: process.env.PGHOST,
     port: parseInt(process.env.PGPORT || ""),
-    database: process.env.PGDATABSE,
-    password: process.env.PGPASSWORD
-})
+    database: process.env.PGDATABASE
+});
 
-pool.on("connect", (client) => console.log('Connected to the Database successfully'));
-pool.on("error", (error) => console.error(`Error while connecting to the Database: ${error}`));
+export const connectDB = () => {
+    pool.connect((err, client, done) => {
+        if(err){
+            console.error(`Error connecting to the Database: ${err}`);
+        }else{
+            console.log('Successfully connected to the database!!');
+            done();
+        }
+    });
+}
 
-export default pool;
+export default {query: (text: string, params?: any[]) => pool.query(text, params)};
