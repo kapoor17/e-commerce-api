@@ -1,6 +1,6 @@
 -- Address related queries
 
-CREATE TABLE Address (
+CREATE TABLE IF NOT EXISTS Address (
     id uuid DEFAULT uuid_generate_v4(),
     street varchar(50) NOT NULL,
     city varchar(50) NOT NULL,
@@ -20,13 +20,13 @@ ON Address (country);
 
 -- Customer related queries
 
-CREATE TABLE Customer (
+CREATE TABLE IF NOT EXISTS Customer (
     id uuid DEFAULT uuid_generate_v4(),
     first_name varchar(20) NOT NULL,
     last_name varchar(20) NOT NULL,
     email varchar(255) UNIQUE NOT NULL,
     password varchar NOT NULL,
-    address_id uuid REFERENCES Address(id) ON UPDATE ,
+    address_id uuid REFERENCES Address(id) ON UPDATE CASCADE ON DELETE SET NULL,
     cart_id uuid,
     created_at timestamp DEFAULT current_timestamp,
     PRIMARY KEY(id)
@@ -40,12 +40,12 @@ ON Customer (email);
 
 -- Order related queries
 
-CREATE TABLE "Order" (
+CREATE TABLE IF NOT EXISTS "Order" (
     id uuid DEFAULT uuid_generate_v4(),
     payment_method varchar(50) NOT NULL,
     status varchar(50) NOT NULL,
     total_amount money NOT NULL,
-    customer_id uuid REFERENCES Customer(id) NOT NULL ON DELETE SET NULL,
+    customer_id uuid REFERENCES Customer(id) NOT NULL ON UPDATE CASCADE ON DELETE RESTRICT,
     created_at timestamp DEFAULT current_timestamp,
     updated_at timestamp DEFAULT current_timestamp,
     PRIMARY KEY(id)
@@ -59,7 +59,7 @@ ON "Order" (total_amount DESC);
 
 -- Brand related queries
 
-CREATE TABLE Brand (
+CREATE TABLE IF NOT EXISTS Brand (
     id uuid DEFAULT uuid_generate_v4(),
     name varchar(50) UNIQUE NOT NULL,
     description text,
@@ -70,13 +70,13 @@ CREATE TABLE Brand (
 
 -- Product related queries
 
-CREATE TABLE Product (
+CREATE TABLE IF NOT EXISTS Product (
     id uuid DEFAULT uuid_generate_v4(),
     name varchar(50) NOT NULL,
     description text,
     price money NOT NULL,
     old_price money,
-    brand_id uuid REFERENCES Brand(id) NOT NULL,
+    brand_id uuid REFERENCES Brand(id) NOT NULL ON UPDATE CASCADE ON DELETE CASCADE,
     rating smallint NOT NULL,
     category varchar(50),
     stock_level integer NOT NULL,
@@ -106,12 +106,12 @@ ON Product (category);
 
 -- Order Item related queries
 
-CREATE TABLE OrderItem (
+CREATE TABLE IF NOT EXISTS OrderItem (
     id uuid DEFAULT uuid_generate_v4(),
     quantity smallint NOT NULL,
     total_amount money NOT NULL,
-    order_id uuid REFERENCES "Order"(id) NOT NULL,
-    product_id uuid REFERENCES Product(id) NOT NULL,
+    order_id uuid REFERENCES "Order"(id) NOT NULL ON UPDATE CASCADE ON DELETE CASCADE,
+    product_id uuid REFERENCES Product(id) ON UPDATE CASCADE ON DELETE RESTRICT,
     PRIMARY KEY(id)
 );
 
@@ -123,7 +123,7 @@ ON OrderItem (order_id);
 
 -- Cart Item related queries
 
-CREATE TABLE Cart (
+CREATE TABLE IF NOT EXISTS Cart (
     id uuid DEFAULT uuid_generate_v4(),
     customer_id uuid,
     created_at timestamp DEFAULT current_timestamp,
@@ -132,11 +132,11 @@ CREATE TABLE Cart (
 
 -- Cart Item related queries
 
-CREATE TABLE CartItem (
+CREATE TABLE IF NOT EXISTS CartItem (
     id uuid DEFAULT uuid_generate_v4(),
     quantity smallint NOT NULL,
-    cart_id uuid REFERENCES Cart(id) NOT NULL,
-    product_id uuid REFERENCES Product(id) NOT NULL,
+    cart_id uuid REFERENCES Cart(id) NOT NULL ON UPDATE CASCADE ON DELETE CASCADE,
+    product_id uuid REFERENCES Product(id) NOT NULL ON UPDATE CASCADE ON DELETE CASCADE,
     created_at timestamp DEFAULT current_timestamp,
     updated_at timestamp DEFAULT current_timestamp,
 );
@@ -150,7 +150,11 @@ ON CartItem (cart_id);
 -- Cart - Customer 1-1 Relation
 
 ALTER TABLE Cart
-ADD FOREIGN KEY (customer_id) REFERENCES Customer(id);
+ADD FOREIGN KEY (customer_id) REFERENCES Customer(id)
+ON UPDATE CASCADE
+ON DELETE CASCADE;
 
 ALTER TABLE Customer
-ADD FOREIGN KEY (cart_id) REFERENCES Cart(id);
+ADD FOREIGN KEY (cart_id) REFERENCES Cart(id)
+ON UPDATE CASCADE
+ON DELETE SET NULL;
