@@ -9,15 +9,19 @@ const pool = new Pool({
     database: process.env.PGDATABASE
 });
 
-export const connectDB = () => {
-    pool.connect((err, client, done) => {
-        if(err){
-            console.error(`Error connecting to the Database: ${err}`);
-        }else{
-            console.log('Successfully connected to the database!!');
-            done();
-        }
-    });
+const testDBConnection = async () => {
+    try{
+        const client = pool.connect();
+        console.log('Successfully connected to the database!!');
+        return client;
+    }catch(err){
+        console.error(`Error connecting to the Database: ${err}`);
+    }
+}
+
+export const connectDB = async () => {
+    const client = await testDBConnection();
+    client?.release();
 }
 
 export default {query: (text: string, params?: any[]) => pool.query(text, params)};

@@ -15,10 +15,10 @@ app.use(helmet());
 const PORT = process.env.PORT;
 const startServer = async () => {
     try{
+        await connectDB();
         app.listen(PORT, () => 
             console.log(`Server listening at PORT: ${PORT}`)
         )
-        connectDB();
     }catch(error){
         console.error(`Error while connecting to the server: ${error}`);
     }
