@@ -20,4 +20,4 @@ app.use(xss());
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`Server listening at PORT: ${PORT}`));
-console.log(await pool.query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'; "))
+console.log(pool.query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'; "))

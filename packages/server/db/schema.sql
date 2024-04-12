@@ -24,10 +24,9 @@ CREATE TABLE Customer (
     id uuid DEFAULT uuid_generate_v4(),
     first_name varchar(20) NOT NULL,
     last_name varchar(20) NOT NULL,
-    gender varchar(10) NOT NULL,
     email varchar(255) UNIQUE NOT NULL,
     password varchar NOT NULL,
-    address_id uuid REFERENCES Address(id),
+    address_id uuid REFERENCES Address(id) ON UPDATE ,
     cart_id uuid,
     created_at timestamp DEFAULT current_timestamp,
     PRIMARY KEY(id)
@@ -46,7 +45,7 @@ CREATE TABLE "Order" (
     payment_method varchar(50) NOT NULL,
     status varchar(50) NOT NULL,
     total_amount money NOT NULL,
-    customer_id uuid REFERENCES Customer(id) NOT NULL,
+    customer_id uuid REFERENCES Customer(id) NOT NULL ON DELETE SET NULL,
     created_at timestamp DEFAULT current_timestamp,
     updated_at timestamp DEFAULT current_timestamp,
     PRIMARY KEY(id)
@@ -117,7 +116,7 @@ CREATE TABLE OrderItem (
 );
 
 ALTER TABLE OrderItem
-ADD CHECK (quantity >= 0);
+ADD CHECK (quantity >= 0 and quantity <= 5);
 
 CREATE INDEX orderitem_order_id_idx
 ON OrderItem (order_id);

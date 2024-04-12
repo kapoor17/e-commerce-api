@@ -10,4 +10,7 @@ const pool = new Pool({
     password: process.env.PGPASSWORD
 })
 
+pool.on("connect", (client) => console.log('Connected to the Database successfully'));
+pool.on("error", (error) => console.error(`Error while connecting to the Database: ${error}`));
+
 export default pool;
