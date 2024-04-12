@@ -3,19 +3,20 @@ import pg from 'pg';
 const { Pool } = pg;
 
 const pool = new Pool({
-    user: process.env.PGUSER,
-    host: process.env.PGHOST,
-    port: parseInt(process.env.PGPORT || ""),
-    database: process.env.PGDATABASE
+    user: process.env.PG_USER,
+    host: process.env.PG_HOST,
+    port: parseInt(process.env.PG_PORT || ""),
+    database: process.env.PG_DATABASE
 });
 
 const testDBConnection = async () => {
     try{
-        const client = pool.connect();
+        const client = await pool.connect();
         console.log('Successfully connected to the database!!');
         return client;
     }catch(err){
         console.error(`Error connecting to the Database: ${err}`);
+        throw err; 
     }
 }
 
