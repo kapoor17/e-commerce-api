@@ -2,12 +2,10 @@ import pg from 'pg';
 const {Client} = pg;
 
 (async () => {
-    const client = new Client({
-        user: process.env.PG_USER,
-        host: process.env.PG_HOST,
-        port: parseInt(process.env.PG_PORT || ""),
-        database: process.env.PG_DATABASE
-    });
+
+    const installUUIDExtension = `
+        CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+    `
 
     const createAddressTable = `
         CREATE TABLE IF NOT EXISTS Address (
@@ -19,13 +17,13 @@ const {Client} = pg;
             PRIMARY KEY(id)
         );
         
-        CREATE INDEX address_city_idx
+        CREATE INDEX IF NOT EXISTS address_city_idx
         ON Address (city);
         
-        CREATE INDEX address_state_idx
+        CREATE INDEX IF NOT EXISTS address_state_idx
         ON Address (state);
         
-        CREATE INDEX address_country_idx
+        CREATE INDEX IF NOT EXISTS address_country_idx
         ON Address (country);
     `;
 
@@ -42,18 +40,18 @@ const {Client} = pg;
             PRIMARY KEY(id)
         );
         
-        CREATE INDEX customer_first_name_last_name_idx
+        CREATE INDEX IF NOT EXISTS customer_first_name_last_name_idx
         ON Customer (first_name, last_name);
         
-        CREATE INDEX customer_email_idx
+        CREATE INDEX IF NOT EXISTS customer_email_idx
         ON Customer (email);
     `;
 
     const createCustomerAddressRelation = `
-            ALTER TABLE Customers
-            ADD FOREIGN KEY (address_id) REFERENCES Address(id)
-            ON UPDATE CASCADE
-            ON DELETE SET NULL;
+        ALTER TABLE Customers
+        ADD FOREIGN KEY (address_id) REFERENCES Address(id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL;
     `;
 
     const createOrderTable = `
@@ -68,18 +66,18 @@ const {Client} = pg;
             PRIMARY KEY(id)
         );
         
-        CREATE INDEX order_status_idx
+        CREATE INDEX IF NOT EXISTS order_status_idx
         ON "Order" (status);
         
-        CREATE INDEX order_total_amount_idx
+        CREATE INDEX IF NOT EXISTS order_total_amount_idx
         ON "Order" (total_amount DESC);
     `;
 
     const createCustomerOrderRelation = `
-            ALTER TABLE "Order"
-            ADD FOREIGN KEY (customer_id) REFERENCES Customer(id)
-            ON UPDATE CASCADE
-            ON DELETE RESTRICT;
+        ALTER TABLE "Order"
+        ADD FOREIGN KEY (customer_id) REFERENCES Customer(id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT;
     `
 
     const createOrderItemTable = `
@@ -93,9 +91,9 @@ const {Client} = pg;
         );
         
         ALTER TABLE OrderItem
-        ADD CHECK (quantity >= 0 and quantity <= 5);
+        ADD CHECK (quantity >= 1 AND quantity <= 5);
         
-        CREATE INDEX orderitem_order_id_idx
+        CREATE INDEX IF NOT EXISTS orderitem_order_id_idx
         ON OrderItem (order_id);
     `;
 
@@ -135,21 +133,21 @@ const {Client} = pg;
         );
         
         ALTER TABLE Product
-        ADD CHECK (rating >= 0 AND rating =< 5);
+        ADD CHECK (rating >= 0 AND rating <= 5);
         
         ALTER TABLE Product
         ADD CHECK (stock_level >= 0);
         
-        CREATE INDEX product_price_id_idx
-        ON Product (price_id);
+        CREATE INDEX IF NOT EXISTS product_price_idx
+        ON Product (price);
         
-        CREATE INDEX product_brand_id_idx
+        CREATE INDEX IF NOT EXISTS product_brand_id_idx
         ON Product (brand_id);
         
-        CREATE INDEX product_rating_idx
+        CREATE INDEX IF NOT EXISTS product_rating_idx
         ON Product (rating);
         
-        CREATE INDEX product_category_idx
+        CREATE INDEX IF NOT EXISTS product_category_idx
         ON Product (category);
     `;
 
@@ -175,12 +173,13 @@ const {Client} = pg;
             product_id uuid NOT NULL,
             created_at timestamp DEFAULT current_timestamp,
             updated_at timestamp DEFAULT current_timestamp,
+            PRIMARY KEY (id)
         );
         
         ALTER TABLE CartItem
         ADD CHECK (quantity >= 1 AND quantity <=5);
         
-        CREATE INDEX cartitem_cart_id_idx
+        CREATE INDEX IF NOT EXISTS cartitem_cart_id_idx
         ON CartItem (cart_id);
     `;
 
@@ -196,7 +195,8 @@ const {Client} = pg;
             id uuid DEFAULT uuid_generate_v4(),
             customer_id uuid NOT NULL,
             created_at timestamp DEFAULT current_timestamp,
-            updated_at timestamp DEFAULT current_timestamp
+            updated_at timestamp DEFAULT current_timestamp,
+            PRIMARY KEY (id)
         );
     `;
 
@@ -209,19 +209,46 @@ const {Client} = pg;
 
     const createCartCustomerRelation = `
         ALTER TABLE Cart
-        ADD FOREIGN KEY customer_id REFERENCES Customer(id)
+        ADD FOREIGN KEY (customer_id) REFERENCES Customer(id)
         ON UPDATE CASCADE
         ON DELETE CASCADE;
 
         ALTER TABLE Customer
-        ADD FOREIGN KEY cart_id REFERENCES Cart(id)
+        ADD FOREIGN KEY (cart_id) REFERENCES Cart(id)
         ON UPDATE CASCADE
         ON DELETE SET NULL;
     `;
+    const client = new Client({
+        user: process.env.PG_USER,
+        host: process.env.PG_HOST,
+        port: parseInt(process.env.PG_PORT || ""),
+        database: process.env.PG_DATABASE
+    });
 
     await client.connect();
 
-    console.log((await client.query("SELECT current_user;")).rows);
+    try{
+        await client.query(installUUIDExtension);
+        await client.query(createAddressTable);
+        await client.query(createCustomersTable);
+        await client.query(createOrderTable);
+        await client.query(createCustomerOrderRelation);
+        await client.query(createOrderItemTable);
+        await client.query(createOrderOrderItemRelation);
+        await client.query(createBrandTable);
+        await client.query(createProductTable);
+        await client.query(createProductBrandRelation);
+        await client.query(createProductOrderItemRelation);
+        await client.query(createCartItemTable);
+        await client.query(createProductCartItemRelation);
+        await client.query(createCartTable);
+        await client.query(createCartCartItemRelation);
+        await client.query(createCartCustomerRelation);
+    }catch(err){
+        console.log(err)
+    }
+
+    console.log((await client.query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")).rows);
 
     await client.end();
 })();
