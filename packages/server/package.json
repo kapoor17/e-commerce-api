@@ -10,7 +10,7 @@
     "start": "node dist/index.js",
     "predev": "npm run build",
     "dev": "npx tsc -w & nodemon dist/index.js",
-    "createDB": "node -r dotenv/config src/db/createDB.js"
+    "createSchema": "node -r dotenv/config src/db/createDB.js"
   },
   "keywords": [],
   "author": "",
