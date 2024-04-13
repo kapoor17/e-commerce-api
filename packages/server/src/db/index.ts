@@ -9,7 +9,7 @@ const pool = new Pool({
     database: process.env.PG_DATABASE
 });
 
-const testDBConnection = async () => {
+const establishPGClient = async () => {
     try{
         const client = await pool.connect();
         console.log('Successfully connected to the database!!');
@@ -20,8 +20,8 @@ const testDBConnection = async () => {
     }
 }
 
-export const connectDB = async () => {
-    const client = await testDBConnection();
+export const testDBConnection = async () => {
+    const client = await establishPGClient();
     client?.release();
 }
 

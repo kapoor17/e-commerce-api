@@ -3,7 +3,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import helmet from 'helmet';
-import { connectDB } from './db/index.js';
+import { testDBConnection } from './db/index.js';
 
 const app = express();
 
@@ -15,7 +15,7 @@ app.use(helmet());
 const PORT = process.env.PORT;
 const startServer = async () => {
     try{
-        await connectDB();
+        await testDBConnection();
         app.listen(PORT, () => 
             console.log(`Server listening at PORT: ${PORT}`)
         )
