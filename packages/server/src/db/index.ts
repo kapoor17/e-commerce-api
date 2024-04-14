@@ -25,4 +25,6 @@ export const testDBConnection = async () => {
     client?.release();
 }
 
-export default {query: (text: string, params?: any[]) => pool.query(text, params)};
+export default {
+    query: (text: string, params?: any[]) => pool.query(text, params)
+};

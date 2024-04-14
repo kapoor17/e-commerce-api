@@ -4,8 +4,10 @@ export interface Customer {
     last_name: string,
     email: string,
     password: string,
-    address_id: string,
+    cart_id?: string,
+    address_id?: string,
     created_at: string,
+    updated_at: string
 }
 
 export type PublicCustomer = Omit<Customer, 'password'>
