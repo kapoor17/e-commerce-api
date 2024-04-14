@@ -5,6 +5,16 @@ const {Client} = pg;
 
     const installUUIDExtension = `
         CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+    `;
+
+    const createUpdatedAtTriggerFunction = `
+        CREATE OR REPLACE FUNCTION update_updated_at()
+        RETURNS TRIGGER AS $$
+        BEGIN
+        NEW."updated_at" := NOW();
+        RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql;
     `
 
     const createAddressTable = `
@@ -27,7 +37,7 @@ const {Client} = pg;
         ON Address (country);
     `;
 
-    const createCustomersTable = `
+    const createCustomerTable = `
         CREATE TABLE IF NOT EXISTS Customer (
             id uuid DEFAULT uuid_generate_v4(),
             first_name varchar(20) NOT NULL,
@@ -37,8 +47,14 @@ const {Client} = pg;
             address_id uuid,
             cart_id uuid,
             created_at timestamp DEFAULT current_timestamp,
+            updated_at timestamp DEFAULT current_timestamp,
             PRIMARY KEY(id)
         );
+
+        CREATE TRIGGER trigger_update_updated_at
+        BEFORE UPDATE ON Customer
+        FOR EACH ROW
+        EXECUTE FUNCTION update_updated_at();
         
         CREATE INDEX IF NOT EXISTS customer_first_name_last_name_idx
         ON Customer (first_name, last_name);
@@ -48,7 +64,7 @@ const {Client} = pg;
     `;
 
     const createCustomerAddressRelation = `
-        ALTER TABLE Customers
+        ALTER TABLE Customer
         ADD FOREIGN KEY (address_id) REFERENCES Address(id)
         ON UPDATE CASCADE
         ON DELETE SET NULL;
@@ -65,6 +81,11 @@ const {Client} = pg;
             updated_at timestamp DEFAULT current_timestamp,
             PRIMARY KEY(id)
         );
+
+        CREATE TRIGGER trigger_update_updated_at
+        BEFORE UPDATE ON "Order"
+        FOR EACH ROW
+        EXECUTE FUNCTION update_updated_at();
         
         CREATE INDEX IF NOT EXISTS order_status_idx
         ON "Order" (status);
@@ -113,6 +134,11 @@ const {Client} = pg;
             updated_at timestamp DEFAULT current_timestamp,
             PRIMARY KEY (id)
         );
+
+        CREATE TRIGGER trigger_update_updated_at
+        BEFORE UPDATE ON Brand
+        FOR EACH ROW
+        EXECUTE FUNCTION update_updated_at();
     `;
 
     const createProductTable = `
@@ -131,6 +157,11 @@ const {Client} = pg;
             updated_at timestamp DEFAULT current_timestamp,
             PRIMARY KEY(id)
         );
+
+        CREATE TRIGGER trigger_update_updated_at
+        BEFORE UPDATE ON Product
+        FOR EACH ROW
+        EXECUTE FUNCTION update_updated_at();
         
         ALTER TABLE Product
         ADD CHECK (rating >= 0 AND rating <= 5);
@@ -175,6 +206,11 @@ const {Client} = pg;
             updated_at timestamp DEFAULT current_timestamp,
             PRIMARY KEY (id)
         );
+
+        CREATE TRIGGER trigger_update_updated_at
+        BEFORE UPDATE ON CartItem
+        FOR EACH ROW
+        EXECUTE FUNCTION update_updated_at();
         
         ALTER TABLE CartItem
         ADD CHECK (quantity >= 1 AND quantity <=5);
@@ -198,6 +234,11 @@ const {Client} = pg;
             updated_at timestamp DEFAULT current_timestamp,
             PRIMARY KEY (id)
         );
+
+        CREATE TRIGGER trigger_update_updated_at
+        BEFORE UPDATE ON Cart
+        FOR EACH ROW
+        EXECUTE FUNCTION update_updated_at();
     `;
 
     const createCartCartItemRelation = `
@@ -218,6 +259,7 @@ const {Client} = pg;
         ON UPDATE CASCADE
         ON DELETE SET NULL;
     `;
+
     const client = new Client({
         user: process.env.PG_USER,
         host: process.env.PG_HOST,
@@ -225,28 +267,34 @@ const {Client} = pg;
         database: process.env.PG_DATABASE
     });
 
-    await client.connect();
-
-    try{
-        await client.query(installUUIDExtension);
-        await client.query(createAddressTable);
-        await client.query(createCustomersTable);
-        await client.query(createOrderTable);
-        await client.query(createCustomerOrderRelation);
-        await client.query(createOrderItemTable);
-        await client.query(createOrderOrderItemRelation);
-        await client.query(createBrandTable);
-        await client.query(createProductTable);
-        await client.query(createProductBrandRelation);
-        await client.query(createProductOrderItemRelation);
-        await client.query(createCartItemTable);
-        await client.query(createProductCartItemRelation);
-        await client.query(createCartTable);
-        await client.query(createCartCartItemRelation);
-        await client.query(createCartCustomerRelation);
-    }catch(err){
-        console.log(err)
-    }
+    await client.connect()
+        .then(async () => {
+            try{
+                await client.query(installUUIDExtension);
+                await client.query(createUpdatedAtTriggerFunction);
+                await client.query(createAddressTable);
+                await client.query(createCustomerTable);
+                await client.query(createOrderTable);
+                await client.query(createCustomerOrderRelation);
+                await client.query(createCustomerAddressRelation);
+                await client.query(createOrderItemTable);
+                await client.query(createOrderOrderItemRelation);
+                await client.query(createBrandTable);
+                await client.query(createProductTable);
+                await client.query(createProductBrandRelation);
+                await client.query(createProductOrderItemRelation);
+                await client.query(createCartItemTable);
+                await client.query(createProductCartItemRelation);
+                await client.query(createCartTable);
+                await client.query(createCartCartItemRelation);
+                await client.query(createCartCustomerRelation);
+            }catch(err){
+                console.log(`Error while creating the schema: ${err}`)
+            }
+        })
+        .catch((e) => {
+            console.error(`Error while connecting to the client: ${e}`);
+        })
 
     console.log((await client.query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")).rows);
 
