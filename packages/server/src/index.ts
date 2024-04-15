@@ -1,7 +1,6 @@
 import 'dotenv/config'
 import express from 'express';
 import bodyParser from 'body-parser';
-import cors from 'cors';
 import helmet from 'helmet';
 import { testDBConnection } from './db/index.js';
 
@@ -9,7 +8,6 @@ const app = express();
 
 app.set('trust proxy', 1)
 app.use(bodyParser.json())
-app.use(cors());
 app.use(helmet());
 
 const PORT = process.env.PORT;

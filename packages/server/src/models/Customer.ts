@@ -16,7 +16,8 @@ export class Customer{
             return user;
         }
         catch(e){
-            console.error(`Error while creating a new user: ${e}`)
+            console.error(`Error while creating a new user: ${e}`);
+            throw e;
         }
     }
 
@@ -30,6 +31,7 @@ export class Customer{
             return user
         }catch(e){
             console.error(`Error while fetching user by id: ${e}`)
+            throw e;
         }
     }
 
@@ -43,6 +45,7 @@ export class Customer{
             return user;
         }catch(e){
             console.error(`Error while fetching user by email: ${e}`)
+            throw e
         }
     }
 }
