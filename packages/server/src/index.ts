@@ -1,18 +1,16 @@
 import 'dotenv/config'
+import 'express-async-errors';
+
 import express from 'express';
-import bodyParser from 'body-parser';
-import helmet from 'helmet';
+import appLoader from './loaders/index.js';
 import { testDBConnection } from './db/index.js';
 
 const app = express();
 
-app.set('trust proxy', 1)
-app.use(bodyParser.json())
-app.use(helmet());
-
 const PORT = process.env.PORT;
 const startServer = async () => {
     try{
+        appLoader(app);
         await testDBConnection();
         app.listen(PORT, () => 
             console.log(`Server listening at PORT: ${PORT}`)
