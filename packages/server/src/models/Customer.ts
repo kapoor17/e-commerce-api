@@ -2,7 +2,7 @@ import { Customer as ICustomer } from "@e-commerce-app/shared/interfaces/Custome
 import db from "../db/index.js";
 
 type CustomerData = Pick<ICustomer, "first_name" | "last_name" | "email" | "password">
-export class Customer{
+class Customer{
 
     async create(data: CustomerData){
         const {first_name, last_name, email, password} = data;
@@ -49,3 +49,5 @@ export class Customer{
         }
     }
 }
+
+export default Customer
