@@ -1,5 +1,6 @@
 import { Express } from "express";
 import session, { SessionOptions } from "express-session";
+import MongoStore from 'connect-mongo';
 
 declare module "express-session" {
     interface SessionData {
@@ -9,28 +10,29 @@ declare module "express-session" {
 }
 
 const sessionLoader = (app: Express) => {
+    let sessionStore;
+    try{
+        sessionStore = MongoStore.create({
+            mongoUrl: process.env.MONGO_URI
+        })
+    }catch(e){
+        console.error(`Error while connecting to Session server: ${e}`)
+    }
+
     const sessionObject: SessionOptions = {
         secret: process.env.SESSION_SECRET || "",
         resave: false,
         saveUninitialized: false,
-        store: new session.MemoryStore(),
+        store: sessionStore,
         cookie: {
-            maxAge: 60000*60*24
+            maxAge: 60000*60*24,
         }
     }
 
-    if(app.get('env') === 'production'){
+    if(app.get('env') === 'production' && sessionObject.cookie){
         app.set('trust proxy', 1)
-        sessionObject.cookie = {
-            maxAge: 6000*60*24,
-            secure: true
-        }
-        /**
-         * change the session store to a DB
-         * sessionObject.cookie = { 
-         *  store: 'here'
-         * }
-         */
+        sessionObject.cookie.secure = true
+        sessionObject.cookie.httpOnly = true
     }
     
     app.use(session(sessionObject));
