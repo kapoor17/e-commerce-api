@@ -1,10 +1,13 @@
-import { Customer as ICustomer } from "@e-commerce-app/shared/interfaces/Customer"
+import { Customer as ICustomer, RegisterCustomer } from "@e-commerce-app/shared/interfaces/Customer"
 import db from "../db/index.js";
-
-type CustomerData = Pick<ICustomer, "first_name" | "last_name" | "email" | "password">
+declare global {
+    namespace Express {
+      interface User extends ICustomer {}
+    }
+}
 class Customer{
 
-    async create(data: CustomerData){
+    public static async create(data: RegisterCustomer): Promise<ICustomer>{
         const {first_name, last_name, email, password} = data;
 
         const text = `INSERT INTO Customer VALUE (first_name, last_name, email, password) RETURNING *`;
@@ -21,7 +24,7 @@ class Customer{
         }
     }
 
-    async findOneById(id: ICustomer['id']){
+    public static async findOneById(id: ICustomer['id']): Promise<ICustomer>{
         const text = `SELECT * FROM Customer WHERE id = $1`;
         const parameters = [id];
 
@@ -35,7 +38,7 @@ class Customer{
         }
     }
 
-    async findOneByEmail(email: ICustomer['email']){
+    public static async findOneByEmail(email: ICustomer['email']): Promise<ICustomer>{
         const text = `SELECT * FROM Customer WHERE email = $1`;
         const parameters = [email];
 

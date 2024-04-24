@@ -11,3 +11,5 @@ export interface Customer {
 }
 
 export type PublicCustomer = Omit<Customer, 'password'>
+
+export type RegisterCustomer = Omit<Customer,'id' | 'cart_id' | 'address_id' | 'created_at' | 'updated_at'>

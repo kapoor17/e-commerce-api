@@ -1,19 +1,33 @@
 import { NextFunction, Request, Response } from "express";
-import jwt, { JwtPayload } from 'jsonwebtoken';
-import { UnauthenticatedError } from "../errors";
+import { BadRequestError, UnauthenticatedError } from "../errors/index.js";
+import passport from "passport";
 
-interface CustomJwtPayload extends JwtPayload {
-    userId: string,
-    userName: string
-}
+export const authenticate = passport.authenticate('local', {
+    failureRedirect: '/login',
+    // successRedirect: '/'
+})
 
-const authenticate = (req: Request, res: Response, next: NextFunction) => {
-    if(req.session.isAuthenticated && req.session.userId){
-        //check the userId in the DB and attach more information if needed to the session object.
-        //if not present then throw new error
+export const isUnauthenticated = (req: Request, res: Response, next: NextFunction) => {
+    if(req.isUnauthenticated()){
         next();
     }else{
-        throw new UnauthenticatedError('Request not authorized');
+        throw new BadRequestError('You are already authenticated!');
+    }
+}
+
+export const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
+    if(req.isAuthenticated()){
+        next();
+    }else{
+        throw new UnauthenticatedError('You are not authenticated!');
+    }
+}
+
+export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
+    if(req.isAuthenticated() /** && Some condition to check if the user is admin */){
+        next();
+    }else{
+        throw new UnauthenticatedError('You are not authenticated!');
     }
 }
 

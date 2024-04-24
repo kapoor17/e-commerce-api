@@ -2,13 +2,6 @@ import { Express } from "express";
 import session, { SessionOptions } from "express-session";
 import MongoStore from 'connect-mongo';
 
-declare module "express-session" {
-    interface SessionData {
-        userId: string,
-        isAuthenticated: boolean
-    }
-}
-
 const sessionLoader = (app: Express) => {
     let sessionStore;
     try{
