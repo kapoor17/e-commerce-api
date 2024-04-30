@@ -3,13 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "description": "",
-  "type": "module",
+  "main": "src/index.ts",
   "scripts": {
-    "build": "rimraf dist && npx tsc",
-    "prestart": "npm run build",
-    "start": "node dist/index.js",
-    "predev": "npm run build",
-    "dev": "npx tsc -w & nodemon dist/index.js",
+    "dev": "nodemon",
     "createSchema": "node -r dotenv/config src/db/createSchema.js"
   },
   "keywords": [],
