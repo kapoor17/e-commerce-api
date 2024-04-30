@@ -1,18 +1,18 @@
-import bodyParser from "body-parser";
-import { Express } from "express";
-import helmet from "helmet";
-import sessionLoader from "./session.js";
-import routesLoader from "./routes.js";
-import errorHandler from "../middleware/errors.js";
+import bodyParser from 'body-parser';
+import { Express } from 'express';
+import helmet from 'helmet';
+import sessionLoader from './session';
+import routesLoader from './routes';
+import { errorHandler } from '../middlewares';
 
 const appLoader = (app: Express) => {
-    app.use(bodyParser.json())
-    app.use(helmet());
+  app.use(bodyParser.json());
+  app.use(helmet());
 
-    sessionLoader(app);
-    routesLoader(app);
+  sessionLoader(app);
+  routesLoader(app);
 
-    app.use(errorHandler);
-}
+  app.use(errorHandler);
+};
 
 export default appLoader;
