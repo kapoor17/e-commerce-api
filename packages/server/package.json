@@ -28,7 +28,8 @@
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "pg": "^8.11.5",
-    "rimraf": "^5.0.5"
+    "rimraf": "^5.0.5",
+    "zod": "^3.23.5"
   },
   "devDependencies": {
     "@e-commerce-app/shared": "*",
