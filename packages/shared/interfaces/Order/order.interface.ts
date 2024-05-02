@@ -26,7 +26,7 @@ export const Order = z.object({
             )
         )
     ),
-  payment_method: z.literal(5, { message: errorMessages.min('Status', 5) }),
+  payment_method: z.literal('COD').or(z.literal('RZRPY')),
   total_amount: z
     .number()
     .min(0, { message: errorMessages.min('Total Amount', 0) }),

@@ -92,7 +92,7 @@ const { Client } = pg;
   const createOrderTable = `
     CREATE TABLE IF NOT EXISTS "Order" (
         id uuid DEFAULT uuid_generate_v4(),
-        payment_method varchar(50) NOT NULL,
+        payment_method varchar(10) NOT NULL,
         status_id uuid NOT NULL,
         total_amount money NOT NULL,
         customer_id uuid NOT NULL,
@@ -111,6 +111,9 @@ const { Client } = pg;
     
     CREATE INDEX IF NOT EXISTS order_total_amount_idx
     ON "Order" (total_amount DESC);
+
+    ALTER TABLE "Order" 
+    ADD CHECK (payment_method IN ('COD','RZRPY'));
   `;
 
   const createOrderOrderStatusRelation = `
@@ -119,7 +122,7 @@ const { Client } = pg;
         ON UPDATE CASCADE
         ON DELETE RESTRICT;
     `;
-  
+
   const createCustomerOrderRelation = `
         ALTER TABLE "Order"
         ADD FOREIGN KEY (customer_id) REFERENCES Customer(id)
