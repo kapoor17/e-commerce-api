@@ -70,35 +70,61 @@ const { Client } = pg;
         ON DELETE SET NULL;
     `;
 
+  const createOrderStatusTable = `
+    CREATE TABLE IF NOT EXISTS OrderStatus (
+        id uuid DEFAULT uuid_generate_v4(),
+        name varchar(50) NOT NULL,
+        label_color char(7) NOT NULL,
+        PRIMARY KEY(id)
+    );
+
+    INSERT INTO OrderStatus (name, label_color) VALUES
+      ('created', '#FFA500'),     -- Orange  
+      ('payed', '#00CED1'),       -- Green  
+      ('confirmed', '#0000FF'),   -- Blue  
+      ('dispatched', '#800080'),  -- Purple  
+      ('shipped', '#FF4500'),     -- Orange-Red  
+      ('received', '#008000'),    -- Dark Turquoise  
+      ('returned', '#FF0000'),    -- Red  
+      ('refunded', '#FFD700');    -- Gold
+  `;
+
   const createOrderTable = `
-        CREATE TABLE IF NOT EXISTS "Order" (
-            id uuid DEFAULT uuid_generate_v4(),
-            payment_method varchar(50) NOT NULL,
-            status varchar(50) NOT NULL,
-            total_amount money NOT NULL,
-            customer_id uuid NOT NULL,
-            created_at timestamp DEFAULT current_timestamp,
-            updated_at timestamp DEFAULT current_timestamp,
-            PRIMARY KEY(id)
-        );
+    CREATE TABLE IF NOT EXISTS "Order" (
+        id uuid DEFAULT uuid_generate_v4(),
+        payment_method varchar(50) NOT NULL,
+        status_id uuid NOT NULL,
+        total_amount money NOT NULL,
+        customer_id uuid NOT NULL,
+        created_at timestamp DEFAULT current_timestamp,
+        updated_at timestamp DEFAULT current_timestamp,
+        PRIMARY KEY(id)
+    );
 
-        CREATE TRIGGER trigger_update_updated_at
-        BEFORE UPDATE ON "Order"
-        FOR EACH ROW
-        EXECUTE FUNCTION update_updated_at();
-        
-        CREATE INDEX IF NOT EXISTS order_status_idx
-        ON "Order" (status);
-        
-        CREATE INDEX IF NOT EXISTS order_total_amount_idx
-        ON "Order" (total_amount DESC);
+    CREATE TRIGGER trigger_update_updated_at
+    BEFORE UPDATE ON "Order"
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at();
+    
+    CREATE INDEX IF NOT EXISTS order_status_idx
+    ON "Order" (status);
+    
+    CREATE INDEX IF NOT EXISTS order_total_amount_idx
+    ON "Order" (total_amount DESC);
+  `;
+
+  const createOrderOrderStatusRelation = `
+        ALTER TABLE "Order"
+        ADD FOREIGN KEY (status_id) REFERENCES OrderStatus(id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT;
     `;
-
+  
   const createCustomerOrderRelation = `
         ALTER TABLE "Order"
         ADD FOREIGN KEY (customer_id) REFERENCES Customer(id)
         ON UPDATE CASCADE
-        ON DELETE RESTRICT;
+        ON DELETE SET NULL;
     `;
 
   const createOrderItemTable = `
@@ -276,7 +302,9 @@ const { Client } = pg;
         await client.query(createUpdatedAtTriggerFunction);
         await client.query(createAddressTable);
         await client.query(createCustomerTable);
+        await client.query(createOrderStatusTable);
         await client.query(createOrderTable);
+        await client.query(createOrderOrderStatusRelation);
         await client.query(createCustomerOrderRelation);
         await client.query(createCustomerAddressRelation);
         await client.query(createOrderItemTable);
