@@ -3,6 +3,7 @@ import {
   RegisterCustomer
 } from '@e-commerce-app/shared/interfaces/Customer';
 import db from '../db/index';
+import Auth from './Auth';
 declare global {
   namespace Express {
     interface User extends ICustomer {}
@@ -10,7 +11,9 @@ declare global {
 }
 class Customer {
   public static async create(data: RegisterCustomer): Promise<ICustomer> {
-    const { first_name, last_name, email, password } = data;
+    let { first_name, last_name, email, password } = data;
+
+    password = await Auth.hashPassword(password);
 
     const text = `INSERT INTO Customer VALUE (first_name, last_name, email, password) RETURNING *`;
     const parameters = [first_name, last_name, email, password];
@@ -25,32 +28,30 @@ class Customer {
     }
   }
 
-  public static async findOneById(id: ICustomer['id']): Promise<ICustomer> {
-    const text = `SELECT * FROM Customer WHERE id = $1`;
-    const parameters = [id];
-
-    try {
-      const res = await db.query(text, parameters);
-      const user = res.rows[0];
-      return user;
-    } catch (e) {
-      console.error(`Error while fetching user by id: ${e}`);
-      throw e;
-    }
-  }
-
-  public static async findOneByEmail(
-    email: ICustomer['email']
+  public static async findOne(
+    data: Record<'id', ICustomer['id']> | Record<'email', ICustomer['email']>
   ): Promise<ICustomer> {
-    const text = `SELECT * FROM Customer WHERE email = $1`;
-    const parameters = [email];
+    let text = '';
+    let parameters: any[];
+
+    if ('id' in data) {
+      text = `SELECT * FROM Customer WHERE id = $1`;
+      parameters = [data.id];
+    } else if ('email' in data) {
+      text = `SELECT * FROM Customer WHERE email = $1`;
+      parameters = [data.email];
+    } else {
+      throw new Error(
+        'Invalid data object. Must contain either "id" or "email" property.'
+      );
+    }
 
     try {
       const res = await db.query(text, parameters);
       const user = res.rows[0];
       return user;
     } catch (e) {
-      console.error(`Error while fetching user by email: ${e}`);
+      console.error(`Error while fetching user: ${e}`);
       throw e;
     }
   }

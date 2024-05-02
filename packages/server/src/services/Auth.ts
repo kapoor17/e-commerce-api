@@ -3,7 +3,7 @@ import {
   Customer as ICustomer
 } from '@e-commerce-app/shared/interfaces/Customer';
 import bcrypt from 'bcrypt';
-import Customer from '../models/Customer';
+import Customer from './Customer';
 import { BadRequestError, CustomError, NotFoundError } from '../errors/index';
 
 class AuthService {
@@ -12,7 +12,7 @@ class AuthService {
     password: string
   ): Promise<ICustomer> {
     try {
-      const customer = await Customer.findOneByEmail(email);
+      const customer = await Customer.findOne({ email });
       if (!customer) {
         throw new NotFoundError('User does not exists');
       }
@@ -27,8 +27,9 @@ class AuthService {
   }
 
   public static async register(customerData: RegisterCustomer) {
+    const { email } = customerData;
     try {
-      if (!!(await Customer.findOneByEmail(customerData.email))) {
+      if (!!(await Customer.findOne({ email }))) {
         throw new CustomError('User already exists', 409);
       }
       const customer = await Customer.create(customerData);
@@ -41,7 +42,7 @@ class AuthService {
 
   public static async hashPassword(
     password: RegisterCustomer['password']
-  ): Promise<String> {
+  ): Promise<string> {
     try {
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash(password, salt);

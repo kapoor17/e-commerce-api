@@ -4,7 +4,7 @@ import LocalStrategy, {
   VerifyFunction,
   IStrategyOptions
 } from 'passport-local';
-import Customer from '../models/Customer';
+import Customer from '../services/Customer';
 import Auth from '../services/Auth';
 
 const passportLoader = (app: Express) => {
@@ -14,7 +14,7 @@ const passportLoader = (app: Express) => {
 
   const verifyCallback: VerifyFunction = async (email, password, done) => {
     try {
-      let user = await Customer.findOneByEmail(email);
+      let user = await Customer.findOne({ email });
       if (!user) return done(null, false);
       if (!(await Auth.comparePassword(user.password, password)))
         return done(null, false);
@@ -36,8 +36,8 @@ const passportLoader = (app: Express) => {
     done(null, user.id);
   });
 
-  passport.deserializeUser((userId: string, done) => {
-    Customer.findOneById(userId)
+  passport.deserializeUser((id: string, done) => {
+    Customer.findOne({ id })
       .then((user) => done(null, user))
       .catch((e) => done(e));
   });
