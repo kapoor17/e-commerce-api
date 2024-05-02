@@ -3,7 +3,6 @@
   "private": true,
   "version": "1.0.0",
   "description": "",
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kapoor17/e-commerce-api.git"
@@ -14,5 +13,8 @@
   "bugs": {
     "url": "https://github.com/kapoor17/e-commerce-api/issues"
   },
-  "homepage": "https://github.com/kapoor17/e-commerce-api#readme"
+  "homepage": "https://github.com/kapoor17/e-commerce-api#readme",
+  "dependencies": {
+    "zod": "^3.23.5"
+  }
 }
