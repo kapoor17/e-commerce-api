@@ -2,7 +2,7 @@ import {
   Customer as ICustomer,
   RegisterCustomer
 } from '@e-commerce-app/shared/interfaces/Customer';
-import db from '../db/index';
+import db from '../models/index';
 import Auth from './Auth';
 declare global {
   namespace Express {
