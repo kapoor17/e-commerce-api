@@ -2,12 +2,12 @@ import pg from 'pg';
 import config from '../config';
 const { Pool } = pg;
 
-const { PG_USER, PG_HOST, PG_PORT, PG_DATABASE } = config.postgre_db;
+const { PGUSER, PGHOST, PGPORT, PGDATABASE } = config.postgre_db;
 const pool = new Pool({
-  user: PG_USER,
-  host: PG_HOST,
-  port: parseInt(PG_PORT || ''),
-  database: PG_DATABASE
+  user: PGUSER,
+  host: PGHOST,
+  port: parseInt(PGPORT || ''),
+  database: PGDATABASE
 });
 
 const establishPGClient = async () => {

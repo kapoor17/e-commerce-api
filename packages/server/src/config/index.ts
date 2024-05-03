@@ -9,18 +9,18 @@ const {
   PORT = '4000',
   SESSION_SECRET = '',
   NODE_ENV = 'development',
-  PG_PORT = '4000',
-  PG_USER = '',
-  PG_HOST = '',
-  PG_DATABASE = ''
+  PGPORT = '4000',
+  PGUSER = '',
+  PGHOST = '',
+  PGDATABASE = ''
 } = process.env;
 
 const config = {
   postgre_db: {
-    PG_PORT,
-    PG_USER,
-    PG_HOST,
-    PG_DATABASE
+    PGPORT,
+    PGUSER,
+    PGHOST,
+    PGDATABASE
   },
   mongo_db: {
     MONGO_USERNAME,
