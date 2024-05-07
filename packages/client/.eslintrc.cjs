@@ -1,18 +1,13 @@
 module.exports = {
-  root: true,
   env: { browser: true, es2020: true },
   extends: [
+    '../../.eslintrc',
     'airbnb',
     'airbnb-typescript',
     'airbnb/hooks',
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
     'plugin:react-hooks/recommended',
-    'plugin:prettier/recommended',
   ],
-  ignorePatterns: ['dist', '.eslintrc.cjs'],
-  parser: '@typescript-eslint/parser',
-  plugins: ['react-refresh', '@typescript-eslint', 'prettier'],
+  plugins: ['react-refresh'],
   rules: {
     'react-refresh/only-export-components': [
       'warn',
@@ -27,9 +22,9 @@ module.exports = {
         unnamedComponents: 'function-expression',
       },
     ],
-    'import/prefer-default-export': 0,
+    '@typescript-eslint/comma-dangle': 'off',
   },
   parserOptions: {
-    project: './tsconfig.json',
+    project: './packages/client/tsconfig.json',
   },
 };
