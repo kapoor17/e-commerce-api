@@ -29,7 +29,7 @@ class AuthService {
   public static async register(customerData: RegisterCustomer) {
     const { email } = customerData;
     try {
-      if (!!(await Customer.findOne({ email }))) {
+      if (await Customer.findOne({ email })) {
         throw new CustomError('User already exists', 409);
       }
       const customer = await Customer.create(customerData);

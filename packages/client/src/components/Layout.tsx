@@ -10,25 +10,21 @@ interface ContainerProps {
 
 export const ContainerFull: React.FC<ContainerProps> = ({
   children,
-  className,
-}) => {
-  return (
-    <section className={`container mx-auto px-6 ${className}`}>
-      {children}
-    </section>
-  );
-};
+  className
+}) => (
+  <section className={`container mx-auto px-6 ${className}`}>
+    {children}
+  </section>
+);
 
 export const ContainerSm: React.FC<ContainerProps> = ({
   children,
-  className,
-}) => {
-  return (
-    <section className={`max-w-6xl w-full mx-auto px-6 ${className}`}>
-      {children}
-    </section>
-  );
-};
+  className
+}) => (
+  <section className={`max-w-6xl w-full mx-auto px-6 ${className}`}>
+    {children}
+  </section>
+);
 
 export const Layout: React.FC = () => {
   const { pathname } = useLocation();

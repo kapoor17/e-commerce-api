@@ -1,12 +1,13 @@
 import pg from 'pg';
 import config from '../config';
+
 const { Pool } = pg;
 
 const { PGUSER, PGHOST, PGPORT, PGDATABASE } = config.postgre_db;
 const pool = new Pool({
   user: PGUSER,
   host: PGHOST,
-  port: parseInt(PGPORT || ''),
+  port: parseInt(PGPORT || '', 10),
   database: PGDATABASE
 });
 
@@ -27,5 +28,5 @@ export const testDBConnection = async () => {
 };
 
 export default {
-  query: (text: string, params?: any[]) => pool.query(text, params)
+  query: (text: string, params?: string[]) => pool.query(text, params)
 };

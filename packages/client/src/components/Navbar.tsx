@@ -1,3 +1,1 @@
-export const Navbar: React.FC = () => {
-  return <nav>Navbar</nav>;
-};
+export const Navbar: React.FC = () => <nav>Navbar</nav>;

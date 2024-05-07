@@ -1,10 +1,9 @@
 import { RegisterCustomer } from '@e-commerce-app/shared/interfaces/Customer/customer.interface';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 
 export const handleRegister = (
-  req: Request<{}, {}, RegisterCustomer>,
-  res: Response,
-  next: NextFunction
+  req: Request<object, object, RegisterCustomer>,
+  res: Response
 ) => {
   console.log(req.body);
   res.send();

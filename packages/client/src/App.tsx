@@ -1,5 +1,3 @@
-const App = () => {
-  return <>Hello World</>;
-};
+const App = () => <>Hello World</>;
 
 export default App;

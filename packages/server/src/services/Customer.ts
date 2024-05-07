@@ -4,6 +4,7 @@ import {
 } from '@e-commerce-app/shared/interfaces/Customer';
 import db from '../models/index';
 import Auth from './Auth';
+
 declare global {
   namespace Express {
     interface User extends ICustomer {}
@@ -11,11 +12,12 @@ declare global {
 }
 class Customer {
   public static async create(data: RegisterCustomer): Promise<ICustomer> {
-    let { first_name, last_name, email, password } = data;
+    const { first_name, last_name, email, password } = data;
 
     password = await Auth.hashPassword(password);
 
-    const text = `INSERT INTO Customer VALUE (first_name, last_name, email, password) RETURNING *`;
+    const text =
+      'INSERT INTO Customer VALUE (first_name, last_name, email, password) RETURNING *';
     const parameters = [first_name, last_name, email, password];
 
     try {
@@ -32,13 +34,13 @@ class Customer {
     data: Record<'id', ICustomer['id']> | Record<'email', ICustomer['email']>
   ): Promise<ICustomer> {
     let text = '';
-    let parameters: any[];
+    let parameters: string[];
 
     if ('id' in data) {
-      text = `SELECT * FROM Customer WHERE id = $1`;
+      text = 'SELECT * FROM Customer WHERE id = $1';
       parameters = [data.id];
     } else if ('email' in data) {
-      text = `SELECT * FROM Customer WHERE email = $1`;
+      text = 'SELECT * FROM Customer WHERE email = $1';
       parameters = [data.email];
     } else {
       throw new Error(

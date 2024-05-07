@@ -15,14 +15,12 @@ export const Typography: React.FC<TypographyProps> = ({
   weight,
   element: TypographyComponent = 'span',
   className = '',
-  style,
-}) => {
-  return (
-    <TypographyComponent
-      className={`${size ? `text-${size}` : ''}${weight ? ` font-${weight}` : ''}${className ? ` ${className}` : ''}`}
-      style={style}
-    >
-      {children}
-    </TypographyComponent>
-  );
-};
+  style
+}) => (
+  <TypographyComponent
+    className={`${size ? `text-${size}` : ''}${weight ? ` font-${weight}` : ''}${className ? ` ${className}` : ''}`}
+    style={style}
+  >
+    {children}
+  </TypographyComponent>
+);

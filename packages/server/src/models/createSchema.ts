@@ -2,11 +2,38 @@ import { promises } from 'fs';
 import path from 'path';
 import { Client } from 'pg';
 
+const readFilesFromDirectory = async (
+  directoryName: string
+): Promise<string[]> => {
+  try {
+    const files = await promises.readdir(directoryName);
+
+    const sqlFiles = await Promise.all(
+      files.map(async (file) => {
+        const filePath = path.join(directoryName, file);
+        const fileExtension = path.extname(filePath);
+
+        if (fileExtension === '.sql') {
+          const sql = await promises.readFile(filePath, 'utf-8');
+          return sql;
+        }
+
+        return '';
+      })
+    );
+
+    return sqlFiles.filter((file) => file.length > 0);
+  } catch (err) {
+    console.error(`Could not read file from ${directoryName}`);
+    throw err;
+  }
+};
+
 const createSchema = async () => {
   const client = new Client();
-  const DB_INIT = await readFilesFromDirectory(__dirname + '/DB_INIT');
-  const TABLES = await readFilesFromDirectory(__dirname + '/TABLES');
-  const RELATIONS = await readFilesFromDirectory(__dirname + '/RELATIONS');
+  const DB_INIT = await readFilesFromDirectory(`${__dirname}/DB_INIT`);
+  const TABLES = await readFilesFromDirectory(`${__dirname}/TABLES`);
+  const RELATIONS = await readFilesFromDirectory(`${__dirname}/RELATIONS`);
 
   await client
     .connect()
@@ -50,33 +77,6 @@ const createSchema = async () => {
     });
 
   process.exit();
-};
-
-const readFilesFromDirectory = async (
-  directoryName: string
-): Promise<string[]> => {
-  try {
-    const files = await promises.readdir(directoryName);
-
-    let sqlFiles = await Promise.all(
-      files.map(async (file) => {
-        const filePath = path.join(directoryName, file);
-        const fileExtension = path.extname(filePath);
-
-        if (fileExtension === '.sql') {
-          const sql = await promises.readFile(filePath, 'utf-8');
-          return sql;
-        }
-
-        return '';
-      })
-    );
-
-    return sqlFiles.filter((file) => file.length > 0);
-  } catch (err) {
-    console.error(`Could not read file from ${directoryName}`);
-    throw err;
-  }
 };
 
 createSchema();

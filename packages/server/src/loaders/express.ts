@@ -1,10 +1,10 @@
 import express, { Express } from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import cors from 'cors';
 import sessionLoader from './session';
 import routesLoader from './routes';
 import { errorHandler, notFound } from '../middlewares';
-import cors from 'cors';
 import passportLoader from './passport';
 
 const expressLoader = (): Express => {

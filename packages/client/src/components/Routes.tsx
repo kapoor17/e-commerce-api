@@ -14,6 +14,4 @@ export const PublicRoutes: React.FC = () => {
   return isAuthenticated ? <Navigate to="/dashboard" /> : <Outlet />;
 };
 
-export const OpenRoutes: React.FC = () => {
-  return <Outlet />;
-};
+export const OpenRoutes: React.FC = () => <Outlet />;

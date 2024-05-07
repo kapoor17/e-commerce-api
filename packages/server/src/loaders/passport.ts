@@ -14,7 +14,7 @@ const passportLoader = (app: Express) => {
 
   const verifyCallback: VerifyFunction = async (email, password, done) => {
     try {
-      let user = await Customer.findOne({ email });
+      const user = await Customer.findOne({ email });
       if (!user) return done(null, false);
       if (!(await Auth.comparePassword(user.password, password)))
         return done(null, false);

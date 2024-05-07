@@ -7,7 +7,7 @@ export const GlobalToastStyle: ToastOptions = {
   closeOnClick: true,
   pauseOnHover: false,
   draggable: false,
-  progress: undefined,
+  progress: undefined
 };
 
 export const showTipAlert = (
@@ -17,7 +17,7 @@ export const showTipAlert = (
   toast(tipAlertText, {
     type: 'info',
     ...GlobalToastStyle,
-    ...extraToastStyle,
+    ...extraToastStyle
   });
 };
 
@@ -28,7 +28,7 @@ export const showErrorAlert = (
   toast(errorAlertText, {
     type: 'error',
     ...GlobalToastStyle,
-    ...extraToastStyle,
+    ...extraToastStyle
   });
 };
 
@@ -39,6 +39,6 @@ export const showSuccessAlert = (
   toast(successAlertText, {
     type: 'success',
     ...GlobalToastStyle,
-    ...extraToastStyle,
+    ...extraToastStyle
   });
 };

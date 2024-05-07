@@ -4,9 +4,8 @@ const useAuthentication = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const checkAuthentication = () => {
-      return setIsAuthenticated(!!localStorage.getItem('token'));
-    };
+    const checkAuthentication = () =>
+      setIsAuthenticated(!!localStorage.getItem('token'));
 
     checkAuthentication();
 
