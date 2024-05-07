@@ -15,6 +15,6 @@
   },
   "homepage": "https://github.com/kapoor17/e-commerce-api#readme",
   "dependencies": {
-    "zod": "^3.23.5"
+    "zod": "^3.23.6"
   }
 }
