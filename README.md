@@ -6,53 +6,26 @@ This repository contains a monorepo setup for an eCommerce application, consisti
 
 To get started, clone this repository:
 
-bash
-
-Copy code
-
-`git clone <repository-url>
-cd ecommerce-monorepo`
+```
+git clone <repository-url> ecommerce-monorepo
+cd ecommerce-monorepo
+```
 
 ### Installing Dependencies
 
-Before running the client or server, you need to install dependencies for each package. Navigate to each package's directory and run:
+Before running the client or server, you need to install dependencies for each package. Navigate to the root directory and run:
 
-bash
-
-Copy code
-
-`cd client
+```
 npm install
-cd ../server
-npm install
-cd ../shared
-npm install`
+```
 
 ## Development
 
-To start the development servers for the client and server, run the following commands:
+To start the development servers for the client and server, run the following command from the root directory:
 
-### Client
-
-bash
-
-Copy code
-
-`cd client
-npm run dev`
-
-The client will be running at http://localhost:3000.
-
-### Server
-
-bash
-
-Copy code
-
-`cd server
-npm run dev`
-
-The server will be running at http://localhost:5000.
+```
+npm run dev
+```
 
 ## Shared Package
 
