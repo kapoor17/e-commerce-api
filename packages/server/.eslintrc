@@ -1,9 +1,9 @@
 {
   "extends": [
-    "../../.eslintrc",
     "airbnb-base",
     "airbnb-typescript/base",
-    "plugin:node/recommended"
+    "plugin:node/recommended",
+    "../../.eslintrc"
   ],
   "rules": {
     "node/no-unsupported-features/es-syntax": "off",
