@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import {
   Customer as ICustomer,
   RegisterCustomer
@@ -12,7 +13,8 @@ declare global {
 }
 class Customer {
   public static async create(data: RegisterCustomer): Promise<ICustomer> {
-    const { first_name, last_name, email, password } = data;
+    const { first_name, last_name, email } = data;
+    let { password } = data;
 
     password = await Auth.hashPassword(password);
 
