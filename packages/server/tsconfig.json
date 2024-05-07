@@ -1,14 +1,9 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "sourceMap": true,
-    "target": "esnext",
     "module": "commonjs",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": true,
-    "strict": true,
-    "skipLibCheck": true
+    "esModuleInterop": true
   },
   "include": ["./*.js", "src/**/*.ts", "test/**/*.ts"]
 }

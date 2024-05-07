@@ -1,5 +1,4 @@
 import 'express-async-errors';
-import appLoader from './loaders/express';
 import { testDBConnection } from './models/index';
 import config from './config/index';
 import expressLoader from './loaders/express';
