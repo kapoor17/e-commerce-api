@@ -1,5 +1,5 @@
-import { RegisterCustomer } from '@e-commerce-app/shared/interfaces/Customer/customer.interface';
 import { Request, Response } from 'express';
+import { RegisterCustomer } from '../../interfaces/Customer/customer.interface';
 
 export const handleRegister = (
   req: Request<object, object, RegisterCustomer>,

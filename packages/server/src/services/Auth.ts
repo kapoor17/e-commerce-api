@@ -1,8 +1,8 @@
+import bcrypt from 'bcrypt';
 import {
   RegisterCustomer,
   Customer as ICustomer
-} from '@e-commerce-app/shared/interfaces/Customer';
-import bcrypt from 'bcrypt';
+} from '../../interfaces/Customer';
 import Customer from './Customer';
 import { BadRequestError, CustomError, NotFoundError } from '../errors/index';
 

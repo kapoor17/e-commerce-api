@@ -28,8 +28,7 @@
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "pg": "^8.11.5",
-    "zod": "^3.23.5",
-    "@e-commerce-app/shared": "*"
+    "zod": "^3.23.5"
   },
   "devDependencies": {
     "@tsconfig/node16": "^16.1.3",
