@@ -2,7 +2,7 @@
 import {
   Customer as ICustomer,
   RegisterCustomer
-} from '../../interfaces/Customer';
+} from '../interfaces/Customer';
 import db from '../models/index';
 import Auth from './Auth';
 

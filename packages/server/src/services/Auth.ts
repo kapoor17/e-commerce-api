@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import {
   RegisterCustomer,
   Customer as ICustomer
-} from '../../interfaces/Customer';
+} from '../interfaces/Customer';
 import Customer from './Customer';
 import { BadRequestError, CustomError, NotFoundError } from '../errors/index';
 
