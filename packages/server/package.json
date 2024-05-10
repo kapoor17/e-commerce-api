@@ -6,7 +6,7 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/src/index.js",
+    "start": "node dist/index.js",
     "dev": "nodemon",
     "createSchema": "ts-node -r dotenv/config src/models/createSchema.ts",
     "test": "jest"
