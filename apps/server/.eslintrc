@@ -10,6 +10,6 @@
     "node/no-missing-import": "off"
   },
   "parserOptions": {
-    "project": "./packages/server/tsconfig.json"
+    "project": "./apps/server/tsconfig.json"
   }
 }

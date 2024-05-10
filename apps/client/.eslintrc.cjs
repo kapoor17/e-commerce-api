@@ -25,6 +25,6 @@ module.exports = {
     '@typescript-eslint/comma-dangle': 'off'
   },
   parserOptions: {
-    project: './packages/client/tsconfig.json'
+    project: './apps/client/tsconfig.json'
   }
 };

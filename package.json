@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev:client": "cd packages/client && npm run dev",
-    "dev:server": "cd packages/server && npm run dev",
+    "dev:client": "cd apps/client && npm run dev",
+    "dev:server": "cd apps/server && npm run dev",
     "dev": "npm-run-all --parallel dev:client dev:server",
     "lint": "eslint . --ext ts,tsx --fix"
   },
@@ -13,9 +13,9 @@
   "author": "",
   "license": "ISC",
   "workspaces": [
-    "packages/server",
-    "packages/client",
-    "packages/shared"
+    "apps/server",
+    "apps/client",
+    "packages/*"
   ],
   "repository": {
     "type": "git",

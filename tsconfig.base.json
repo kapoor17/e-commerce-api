@@ -13,8 +13,5 @@
     // "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "references": [
-    { "path": "./packages/client" },
-    { "path": "./packages/server" }
-  ]
+  "references": [{ "path": "./apps/client" }, { "path": "./apps/server" }]
 }
